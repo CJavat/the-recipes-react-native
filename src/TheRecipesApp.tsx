@@ -1,10 +1,28 @@
-import React from 'react';
-import {Text, useColorScheme} from 'react-native';
+import 'react-native-gesture-handler';
+
+import {useEffect} from 'react';
+import {useColorScheme} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+
+import {Navigator} from './presentation/navigator/Navigator';
+import {useThemeStore} from './presentation/store/theme/ThemeStore';
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  const isDarkTheme = isDark ? true : false;
 
-  return <Text>Hola Mundo2</Text>;
+  const {toggleTheme, theme} = useThemeStore();
+
+  useEffect(() => {
+    toggleTheme(isDarkTheme);
+  }, []);
+
+  return (
+    <NavigationContainer theme={theme}>
+      <Navigator />
+    </NavigationContainer>
+  );
 }
 
 export default App;
