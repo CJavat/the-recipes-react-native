@@ -15,6 +15,8 @@ import {StackScreenProps} from '@react-navigation/stack';
 
 import {RootStackParams} from '../../navigator/Navigator';
 import {useThemeStore} from '../../store/theme/ThemeStore';
+import {recipesApi} from '../../../config/api/recipesApi';
+import {API_URL_ANDROID} from '@env';
 
 interface FormInput {
   email: string;
@@ -50,9 +52,8 @@ export const LoginScreen = ({navigation}: Props) => {
     setShowPassword(passwordIcon === 'eye-outline' ? false : true);
   };
 
-  const onSubmit: SubmitHandler<FormInput> = data => {
+  const onSubmit: SubmitHandler<FormInput> = async data => {
     //TODO: Llamar la base de datos con axios
-    console.log(data);
   };
 
   return (
@@ -91,10 +92,10 @@ export const LoginScreen = ({navigation}: Props) => {
                         value: true,
                         message: 'El correo es obligatorio',
                       },
-                      pattern: {
-                        value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$/,
-                        message: 'Escribe un correo válido',
-                      },
+                      // pattern: {
+                      //   value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$/,
+                      //   message: 'Escribe un correo válido',
+                      // },
                     }}
                     render={({field: {onChange, onBlur, value}}) => (
                       <TextInput

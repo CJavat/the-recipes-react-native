@@ -25,3 +25,13 @@ npx react-native doctor
 ```
 npm run android
 ```
+
+## Configurar ENVs
+
+1. Para obtener el **API_URL_ANDROID** primero abrir el **CMD** y ejecutar `ipconfig`, esa IP agregarla seguido del :3000. Ejemplo
+
+```
+http://192.168.0.15:3000
+```
+
+2.Para obtener el **API_URL_IOS** es el `http://localhost:3000`
