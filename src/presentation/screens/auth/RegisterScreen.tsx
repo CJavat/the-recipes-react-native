@@ -1,5 +1,7 @@
 import {useState} from 'react';
 import {
+  ActivityIndicator,
+  Alert,
   Image,
   Pressable,
   SafeAreaView,
@@ -16,9 +18,10 @@ import {StackScreenProps} from '@react-navigation/stack';
 
 import {RootStackParams} from '../../navigator/Navigator';
 import {useThemeStore} from '../../store/theme/ThemeStore';
+import {useAuthStore} from '../../store/auth/AuthStore';
 
 interface FormInput {
-  fistName: string;
+  firstName: string;
   lastName: string;
   email: string;
   password: string;
@@ -32,17 +35,22 @@ const theRecipesLogo = require('../../../assets/logos/android-chrome-512x512.png
 
 export const RegisterScreen = ({navigation}: Props) => {
   const {isDark} = useThemeStore();
+  const {signUp} = useAuthStore();
   const {
     control,
     handleSubmit,
+    watch,
     formState: {errors},
   } = useForm<FormInput>();
+
+  const passwordValue = watch('password', '');
 
   const [isPressedText, setIsPressedText] = useState(false);
   const [isPressedButton, setIsPressedButton] = useState(false);
   const [passwordIcon, setPasswordIcon] =
     useState<eyePassword>('eye-off-outline');
   const [showPassword, setShowPassword] = useState(false);
+  const [isPosting, setIsPosting] = useState(false);
 
   const toggleShowPassword = async () => {
     setPasswordIcon(
@@ -52,9 +60,27 @@ export const RegisterScreen = ({navigation}: Props) => {
     setShowPassword(passwordIcon === 'eye-outline' ? false : true);
   };
 
-  const onSubmit: SubmitHandler<FormInput> = data => {
-    //TODO: Llamar la base de datos con axios
-    console.log(data);
+  const onSubmit: SubmitHandler<FormInput> = async data => {
+    const {firstName, lastName, email, password} = data;
+    setIsPosting(true);
+
+    try {
+      const message = await signUp(firstName, lastName, email, password);
+      Alert.alert('Cuenta Creada Correctamente', message[0], [
+        {
+          text: 'OK',
+          onPress: () => {
+            navigation.replace('Login');
+          },
+        },
+      ]);
+
+      return;
+    } catch (error) {
+      Alert.alert('Error Al Ingresar', error as string, [{text: 'OK'}]);
+    } finally {
+      setIsPosting(false);
+    }
   };
 
   return (
@@ -113,12 +139,12 @@ export const RegisterScreen = ({navigation}: Props) => {
                         placeholder="Escribe tu nombre"
                       />
                     )}
-                    name="fistName"
+                    name="firstName"
                     defaultValue=""
                   />
-                  {errors.fistName && (
+                  {errors.firstName && (
                     <Text style={tw`text-red-500`}>
-                      {errors.fistName.message}
+                      {errors.firstName.message}
                     </Text>
                   )}
                 </View>
@@ -188,7 +214,8 @@ export const RegisterScreen = ({navigation}: Props) => {
                         message: 'El correo es obligatorio',
                       },
                       pattern: {
-                        value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$/,
+                        value:
+                          /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/,
                         message: 'Escribe un correo válido',
                       },
                     }}
@@ -266,16 +293,68 @@ export const RegisterScreen = ({navigation}: Props) => {
                 </View>
               </View>
 
+              {/* Confirmar Password */}
+              <View>
+                <Text
+                  style={tw`text-sm font-medium leading-6 ${
+                    isDark ? 'text-sky-50' : 'text-sky-950'
+                  }`}>
+                  Confirmar Contraseña
+                </Text>
+                <View style={tw`mt-2`}>
+                  <Controller
+                    control={control}
+                    rules={{
+                      validate: value =>
+                        value === passwordValue ||
+                        'Las contraseñas con coinciden',
+                    }}
+                    render={({field: {onChange, onBlur, value}}) => (
+                      <>
+                        <TextInput
+                          style={tw`w-full rounded-md border-0 pl-3 py-1.5 shadow-sm ${
+                            isDark ? 'text-sky-50' : 'text-sky-950'
+                          }`}
+                          onBlur={onBlur}
+                          onChangeText={onChange}
+                          value={value}
+                          placeholder="Escribe otra vez la contraseña"
+                          secureTextEntry={!showPassword}
+                        />
+
+                        <Pressable
+                          onPress={toggleShowPassword}
+                          style={tw`absolute top-1 right-3 z-10`}>
+                          <Icon name={passwordIcon} size={30} />
+                        </Pressable>
+                      </>
+                    )}
+                    name="rePasword"
+                    defaultValue=""
+                  />
+                  {errors.rePasword && (
+                    <Text style={tw`text-red-500`}>
+                      {errors.rePasword.message}
+                    </Text>
+                  )}
+                </View>
+              </View>
+
               <Pressable
                 onPressIn={() => setIsPressedButton(true)}
                 onPressOut={() => setIsPressedButton(false)}
                 onPress={handleSubmit(onSubmit)}
+                disabled={isPosting}
                 style={tw`rounded-md px-3 py-1.5 ${
                   isPressedButton ? 'bg-sky-500' : 'bg-sky-700'
                 }`}>
-                <Text style={tw`text-center uppercase font-bold text-white`}>
-                  Ingresar
-                </Text>
+                {!isPosting ? (
+                  <Text style={tw`text-center uppercase font-bold text-white`}>
+                    Crear Cuenta
+                  </Text>
+                ) : (
+                  <ActivityIndicator color={'#FFF'} animating={isPosting} />
+                )}
               </Pressable>
             </View>
 

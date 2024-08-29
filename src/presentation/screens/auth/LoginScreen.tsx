@@ -1,5 +1,7 @@
 import {useState} from 'react';
 import {
+  ActivityIndicator,
+  Alert,
   Image,
   Pressable,
   SafeAreaView,
@@ -14,9 +16,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {StackScreenProps} from '@react-navigation/stack';
 
 import {RootStackParams} from '../../navigator/Navigator';
+
 import {useThemeStore} from '../../store/theme/ThemeStore';
-import {recipesApi} from '../../../config/api/recipesApi';
-import {API_URL_ANDROID} from '@env';
+import {useAuthStore} from '../../store/auth/AuthStore';
 
 interface FormInput {
   email: string;
@@ -26,23 +28,24 @@ interface FormInput {
 interface Props extends StackScreenProps<RootStackParams, 'Login'> {}
 
 type eyePassword = 'eye-outline' | 'eye-off-outline';
-
 const theRecipesLogo = require('../../../assets/logos/android-chrome-512x512.png');
 
 export const LoginScreen = ({navigation}: Props) => {
   const {isDark} = useThemeStore();
+  const {login} = useAuthStore();
   const {
     control,
     handleSubmit,
     formState: {errors},
   } = useForm<FormInput>();
 
-  const [isPressedText, setIsPressedText] = useState(false);
   const [isPressedTextForgot, setIsPressedTextForgot] = useState(false);
+  const [isPressedText, setIsPressedText] = useState(false);
   const [isPressedButton, setIsPressedButton] = useState(false);
   const [passwordIcon, setPasswordIcon] =
     useState<eyePassword>('eye-off-outline');
   const [showPassword, setShowPassword] = useState(false);
+  const [isPosting, setIsPosting] = useState(false);
 
   const toggleShowPassword = async () => {
     setPasswordIcon(
@@ -53,7 +56,17 @@ export const LoginScreen = ({navigation}: Props) => {
   };
 
   const onSubmit: SubmitHandler<FormInput> = async data => {
-    //TODO: Llamar la base de datos con axios
+    const {email, password} = data;
+    setIsPosting(true);
+
+    try {
+      await login(email, password);
+      return navigation.replace('Home');
+    } catch (error) {
+      Alert.alert('Error Al Ingresar', error as string, [{text: 'OK'}]);
+    } finally {
+      setIsPosting(false);
+    }
   };
 
   return (
@@ -92,10 +105,11 @@ export const LoginScreen = ({navigation}: Props) => {
                         value: true,
                         message: 'El correo es obligatorio',
                       },
-                      // pattern: {
-                      //   value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$/,
-                      //   message: 'Escribe un correo válido',
-                      // },
+                      pattern: {
+                        value:
+                          /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/,
+                        message: 'Escribe un correo válido',
+                      },
                     }}
                     render={({field: {onChange, onBlur, value}}) => (
                       <TextInput
@@ -189,12 +203,17 @@ export const LoginScreen = ({navigation}: Props) => {
                 onPressIn={() => setIsPressedButton(true)}
                 onPressOut={() => setIsPressedButton(false)}
                 onPress={handleSubmit(onSubmit)}
+                disabled={isPosting}
                 style={tw`rounded-md px-3 py-1.5 ${
                   isPressedButton ? 'bg-sky-500' : 'bg-sky-700'
                 }`}>
-                <Text style={tw`text-center uppercase font-bold text-white`}>
-                  Ingresar
-                </Text>
+                {!isPosting ? (
+                  <Text style={tw`text-center uppercase font-bold text-white`}>
+                    Ingresar
+                  </Text>
+                ) : (
+                  <ActivityIndicator color={'#FFF'} animating={isPosting} />
+                )}
               </Pressable>
             </View>
 
