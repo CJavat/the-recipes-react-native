@@ -27,14 +27,18 @@ export const authLogin = async (email: string, password: string) => {
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError;
-      const {message, ...rest} = axiosError.response
-        ?.data as LoginErrorResponse;
+      const loginError = axiosError.response?.data as LoginErrorResponse;
 
       return {
         data: null,
-        message,
+        message: loginError?.message ?? 'Ocurrió un error desconocido',
       };
     }
+
+    return {
+      data: null,
+      message: ['Ocurrió un error desconocido'],
+    };
   }
 };
 
@@ -52,14 +56,18 @@ export const authRegister = async (user: RegisterUser) => {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError;
-      const {message, ...rest} = axiosError.response
-        ?.data as RegisterErrorResponse;
+      const loginError = axiosError.response?.data as LoginErrorResponse;
 
       return {
         ok: false,
-        message,
+        message: loginError?.message ?? 'Ocurrió un error desconocido',
       };
     }
+
+    return {
+      ok: false,
+      message: ['Ocurrió un error desconocido'],
+    };
   }
 };
 
@@ -73,17 +81,17 @@ export const authForgotPassword = async (email: string) => {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError;
-      const {message, ...rest} = axiosError.response
-        ?.data as RegisterErrorResponse;
+      const loginError = axiosError.response?.data as LoginErrorResponse;
+
       return {
         ok: false,
-        message,
+        message: loginError?.message ?? 'Ocurrió un error desconocido',
       };
     }
 
     return {
       ok: false,
-      error,
+      message: ['Ocurrió un error desconocido'],
     };
   }
 };

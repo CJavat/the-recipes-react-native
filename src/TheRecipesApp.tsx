@@ -7,7 +7,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {Navigator} from './presentation/navigator/Navigator';
 import {useThemeStore} from './presentation/store/theme/ThemeStore';
 
-function App(): React.JSX.Element {
+function TheRecipesApp(): React.JSX.Element {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const isDarkTheme = isDark ? true : false;
@@ -25,4 +25,4 @@ function App(): React.JSX.Element {
   );
 }
 
-export default App;
+export default TheRecipesApp;
