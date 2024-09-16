@@ -5,6 +5,7 @@ import tw from 'twrnc';
 
 import {RootStackParams} from '../../navigator/Navigator';
 import {useAuthStore} from '../../store/auth/AuthStore';
+import {DashboardLayout} from '../../layouts/DashboardLayout';
 
 interface Props extends StackScreenProps<RootStackParams, 'Home'> {}
 
@@ -20,8 +21,8 @@ export const HomeScreen = ({navigation}: Props) => {
   };
 
   return (
-    <View>
-      <Text style={tw`flex`}>Home Screen</Text>
+    <DashboardLayout>
+      <Text style={{}}>Home Screen</Text>
 
       <Pressable
         onPress={onLogout}
@@ -30,6 +31,6 @@ export const HomeScreen = ({navigation}: Props) => {
           Cerrar Sesión
         </Text>
       </Pressable>
-    </View>
+    </DashboardLayout>
   );
 };

@@ -39,9 +39,13 @@ export const LoginScreen = ({navigation}: Props) => {
     formState: {errors},
   } = useForm<FormInput>();
 
-  const [isPressedTextForgot, setIsPressedTextForgot] = useState(false);
-  const [isPressedText, setIsPressedText] = useState(false);
-  const [isPressedButton, setIsPressedButton] = useState(false);
+  const [isPressedButton, setIsPressedButton] = useState({
+    forgotPasswordButton: false,
+    registerAccountButton: false,
+    reactivateAccountButton: false,
+    loginButton: false,
+  });
+
   const [passwordIcon, setPasswordIcon] =
     useState<eyePassword>('eye-off-outline');
   const [showPassword, setShowPassword] = useState(false);
@@ -63,6 +67,7 @@ export const LoginScreen = ({navigation}: Props) => {
       await login(email, password);
       return navigation.replace('Home');
     } catch (error) {
+      console.log(error);
       Alert.alert('Error Al Ingresar', error as string, [{text: 'OK'}]);
     } finally {
       setIsPosting(false);
@@ -143,12 +148,24 @@ export const LoginScreen = ({navigation}: Props) => {
                   </Text>
 
                   <Pressable
-                    onPressIn={() => setIsPressedTextForgot(true)}
-                    onPressOut={() => setIsPressedTextForgot(false)}
+                    onPressIn={() =>
+                      setIsPressedButton(prevState => ({
+                        ...prevState,
+                        forgotPasswordButton: true,
+                      }))
+                    }
+                    onPressOut={() =>
+                      setIsPressedButton(prevState => ({
+                        ...prevState,
+                        forgotPasswordButton: false,
+                      }))
+                    }
                     onPress={() => navigation.push('ForgotPassword')}>
                     <Text
                       style={tw`text-sm font-semibold ${
-                        isPressedTextForgot ? 'text-sky-500' : 'text-sky-700'
+                        isPressedButton.forgotPasswordButton
+                          ? 'text-sky-500'
+                          : 'text-sky-700'
                       }`}>
                       ¿Olvidaste tu contraseña?
                     </Text>
@@ -200,12 +217,22 @@ export const LoginScreen = ({navigation}: Props) => {
               </View>
 
               <Pressable
-                onPressIn={() => setIsPressedButton(true)}
-                onPressOut={() => setIsPressedButton(false)}
+                onPressIn={() =>
+                  setIsPressedButton(prevState => ({
+                    ...prevState,
+                    loginButton: true,
+                  }))
+                }
+                onPressOut={() =>
+                  setIsPressedButton(prevState => ({
+                    ...prevState,
+                    loginButton: false,
+                  }))
+                }
                 onPress={handleSubmit(onSubmit)}
                 disabled={isPosting}
                 style={tw`rounded-md px-3 py-1.5 ${
-                  isPressedButton ? 'bg-sky-500' : 'bg-sky-700'
+                  isPressedButton.loginButton ? 'bg-sky-500' : 'bg-sky-700'
                 }`}>
                 {!isPosting ? (
                   <Text style={tw`text-center uppercase font-bold text-white`}>
@@ -217,18 +244,59 @@ export const LoginScreen = ({navigation}: Props) => {
               </Pressable>
             </View>
 
+            {/* Register Screen */}
             <Text style={tw`mt-10 text-center text-gray-500`}>
               ¿Aún no estás registrado?
             </Text>
             <Pressable
-              onPressIn={() => setIsPressedText(true)}
-              onPressOut={() => setIsPressedText(false)}
+              onPressIn={() =>
+                setIsPressedButton(prevState => ({
+                  ...prevState,
+                  registerAccountButton: true,
+                }))
+              }
+              onPressOut={() =>
+                setIsPressedButton(prevState => ({
+                  ...prevState,
+                  registerAccountButton: false,
+                }))
+              }
               onPress={() => navigation.replace('Register')}>
               <Text
                 style={tw`font-semibold leading-6 text-center ${
-                  isPressedText ? 'text-sky-500' : 'text-sky-700'
+                  isPressedButton.registerAccountButton
+                    ? 'text-sky-500'
+                    : 'text-sky-700'
                 }`}>
                 Crea una cuenta gratis aquí.
+              </Text>
+            </Pressable>
+
+            {/* Reactivate Account Screen */}
+            <Text style={tw`mt-3 text-center text-gray-500`}>
+              ¿Tu cuenta no está activa?
+            </Text>
+            <Pressable
+              onPressIn={() =>
+                setIsPressedButton(prevState => ({
+                  ...prevState,
+                  reactivateAccountButton: true,
+                }))
+              }
+              onPressOut={() =>
+                setIsPressedButton(prevState => ({
+                  ...prevState,
+                  reactivateAccountButton: false,
+                }))
+              }
+              onPress={() => navigation.navigate('ReactivateAccount')}>
+              <Text
+                style={tw`font-semibold leading-6 text-center ${
+                  isPressedButton.reactivateAccountButton
+                    ? 'text-sky-500'
+                    : 'text-sky-700'
+                }`}>
+                Actívala aquí.
               </Text>
             </Pressable>
           </View>

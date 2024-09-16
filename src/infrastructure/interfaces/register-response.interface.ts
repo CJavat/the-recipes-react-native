@@ -6,5 +6,4 @@ export interface RegisterResponse {
   isActive: boolean;
   createdAt: Date;
   token: string;
-  message: string;
 }

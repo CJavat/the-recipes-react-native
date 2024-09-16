@@ -5,60 +5,58 @@ import {
   Image,
   Pressable,
   SafeAreaView,
-  ScrollView,
   Text,
-  TextInput,
   View,
 } from 'react-native';
-import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import tw from 'twrnc';
 import {StackScreenProps} from '@react-navigation/stack';
+import {Controller, SubmitHandler, useForm} from 'react-hook-form';
+import {ScrollView, TextInput} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import {RootStackParams} from '../../navigator/Navigator';
-
 import {useThemeStore} from '../../store/theme/ThemeStore';
+import {RootStackParams} from '../../navigator/Navigator';
 import {useAuthStore} from '../../store/auth/AuthStore';
+
+const theRecipesLogo = require('../../../assets/logos/android-chrome-512x512.png');
 
 interface FormInput {
   email: string;
 }
-interface Props extends StackScreenProps<RootStackParams, 'ForgotPassword'> {}
+interface Props
+  extends StackScreenProps<RootStackParams, 'ReactivateAccount'> {}
 
-export const ForgotPassword = ({navigation}: Props) => {
+export const ReactivateAccount = ({navigation, route}: Props) => {
+  const {reactivateAccount} = useAuthStore();
+  const [isPosting, setIsPosting] = useState(false);
+  const [isPressedButton, setIsPressedButton] = useState({
+    backButton: false,
+    reactivateButton: false,
+  });
+
   const {isDark} = useThemeStore();
-  const {user, checkStatus, forgotPassword} = useAuthStore();
+
   const {
     control,
     handleSubmit,
     formState: {errors},
   } = useForm<FormInput>();
 
-  const theRecipesLogo = require('../../../assets/logos/android-chrome-512x512.png');
-
-  const [isPressedButton, setIsPressedButton] = useState({
-    backButton: false,
-    forgotPassword: false,
-  });
-  const [isPosting, setIsPosting] = useState(false);
-
   const onSubmit: SubmitHandler<FormInput> = async data => {
     const {email} = data;
+
     setIsPosting(true);
-
     try {
-      const message = await forgotPassword(email);
+      const {message} = await reactivateAccount(email);
 
-      Alert.alert('Se ha enviado la solicitud', message as unknown as string, [
-        {
-          text: 'OK',
-          onPress: () => {
-            navigation.replace('Login');
-          },
-        },
+      Alert.alert('Cuenta Reactivada', message, [
+        {text: 'OK', onPress: () => navigation.replace('Login')},
       ]);
+
+      return;
     } catch (error) {
-      Alert.alert('Error Al Ingresar', error as string, [{text: 'OK'}]);
+      console.log(error);
+      Alert.alert('Error Al Reactivar Cuenta', error as string, [{text: 'OK'}]);
     } finally {
       setIsPosting(false);
     }
@@ -74,8 +72,8 @@ export const ForgotPassword = ({navigation}: Props) => {
           onPressOut={() =>
             setIsPressedButton(prevState => ({...prevState, backButton: false}))
           }
-          style={tw`absolute top-5 left-1 flex flex-row items-center px-3 rounded `}
-          onPress={() => navigation.goBack()}>
+          onPress={() => navigation.goBack()}
+          style={tw`absolute top-5 left-1 flex flex-row items-center px-3 rounded `}>
           <Icon
             name="arrow-back-outline"
             size={40}
@@ -96,18 +94,15 @@ export const ForgotPassword = ({navigation}: Props) => {
               style={tw`mt-5 text-center text-2xl font-bold leading-9 tracking-tight text-sky-500 ${
                 isDark ? 'text-sky-50' : 'text-sky-950'
               }`}>
-              Recuperar Contraseña
+              Activar Cuenta
             </Text>
           </View>
 
-          <View style={tw`mt-10 mx-auto w-full max-w-sm`}>
-            <View style={tw`gap-6`}>
-              {/* Email */}
+          <View style={tw`mt-10 sm:mx-auto sm:w-full sm:max-w-sm`}>
+            <View style={tw`space-y-6`}>
               <View>
                 <Text
-                  style={tw`text-sm font-medium leading-6 ${
-                    isDark ? 'text-sky-50' : 'text-sky-950'
-                  }`}>
+                  style={tw`text-sm font-medium leading-6 text-sky-950 dark:text-sky-50`}>
                   Email
                 </Text>
                 <View style={tw`mt-2`}>
@@ -145,32 +140,37 @@ export const ForgotPassword = ({navigation}: Props) => {
                 </View>
               </View>
 
-              <Pressable
-                onPressIn={() =>
-                  setIsPressedButton(prevState => ({
-                    ...prevState,
-                    forgotPassword: true,
-                  }))
-                }
-                onPressOut={() =>
-                  setIsPressedButton(prevState => ({
-                    ...prevState,
-                    forgotPassword: false,
-                  }))
-                }
-                onPress={handleSubmit(onSubmit)}
-                disabled={isPosting}
-                style={tw`rounded-md px-3 py-1.5 ${
-                  isPressedButton.forgotPassword ? 'bg-sky-500' : 'bg-sky-700'
-                }`}>
-                {!isPosting ? (
-                  <Text style={tw`text-center uppercase font-bold text-white`}>
-                    Recuperar contraseña
-                  </Text>
-                ) : (
-                  <ActivityIndicator color={'#FFF'} animating={isPosting} />
-                )}
-              </Pressable>
+              <View>
+                <Pressable
+                  onPressIn={() =>
+                    setIsPressedButton(prevState => ({
+                      ...prevState,
+                      reactivateButton: true,
+                    }))
+                  }
+                  onPressOut={() =>
+                    setIsPressedButton(prevState => ({
+                      ...prevState,
+                      reactivateButton: false,
+                    }))
+                  }
+                  onPress={handleSubmit(onSubmit)}
+                  disabled={isPosting}
+                  style={tw`mt-5 rounded-md px-3 py-1.5 ${
+                    isPressedButton.reactivateButton
+                      ? 'bg-sky-500'
+                      : 'bg-sky-700'
+                  }`}>
+                  {!isPosting ? (
+                    <Text
+                      style={tw`text-center uppercase font-bold text-white`}>
+                      Reactivar Cuenta
+                    </Text>
+                  ) : (
+                    <ActivityIndicator color={'#FFF'} animating={isPosting} />
+                  )}
+                </Pressable>
+              </View>
             </View>
           </View>
         </View>

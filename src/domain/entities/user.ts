@@ -6,6 +6,8 @@ export interface User {
   avatar?: string;
   isActive: boolean;
   role?: string;
+  activationToken: string | null;
   createdAt: Date;
   updatedAt?: Date | null;
+  token: string;
 }

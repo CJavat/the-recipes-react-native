@@ -3,7 +3,6 @@ import {recipesApi} from '../../config/api/recipesApi';
 import {
   LoginErrorResponse,
   LoginResponse,
-  RegisterErrorResponse,
   RegisterResponse,
 } from '../../infrastructure/interfaces';
 
@@ -26,6 +25,7 @@ export const authLogin = async (email: string, password: string) => {
     return {data, message: null};
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
+      console.log(error);
       const axiosError = error as AxiosError;
       const loginError = axiosError.response?.data as LoginErrorResponse;
 
@@ -51,7 +51,7 @@ export const authRegister = async (user: RegisterUser) => {
 
     return {
       ok: true,
-      message: [data.message],
+      message: ['Se creó tu cuenta correctamente'],
     };
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -93,5 +93,43 @@ export const authForgotPassword = async (email: string) => {
       ok: false,
       message: ['Ocurrió un error desconocido'],
     };
+  }
+};
+
+export const reactivateAccount = async (email: string) => {
+  try {
+    const {data} = await recipesApi.post('/users/reactivate-account', {email});
+
+    return {
+      ok: true,
+      message: data.message,
+    };
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      const loginError = axiosError.response?.data as LoginErrorResponse;
+
+      return {
+        ok: false,
+        message: loginError?.message ?? 'Ocurrió un error desconocido',
+      };
+    }
+
+    return {
+      ok: false,
+      message: ['Ocurrió un error desconocido'],
+    };
+  }
+};
+
+export const checkAuthStatus = async () => {
+  try {
+    const {data} = await recipesApi.get('/auth/check-token');
+
+    return data;
+  } catch (error) {
+    console.log(error);
+
+    throw new Error('Ha ocurrido un errorr');
   }
 };

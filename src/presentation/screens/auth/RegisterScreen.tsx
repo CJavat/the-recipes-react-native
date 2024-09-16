@@ -45,8 +45,11 @@ export const RegisterScreen = ({navigation}: Props) => {
 
   const passwordValue = watch('password', '');
 
-  const [isPressedText, setIsPressedText] = useState(false);
-  const [isPressedButton, setIsPressedButton] = useState(false);
+  const [isPressedButton, setIsPressedButton] = useState({
+    registerAccountButton: false,
+    loginButton: false,
+  });
+
   const [passwordIcon, setPasswordIcon] =
     useState<eyePassword>('eye-off-outline');
   const [showPassword, setShowPassword] = useState(false);
@@ -341,12 +344,24 @@ export const RegisterScreen = ({navigation}: Props) => {
               </View>
 
               <Pressable
-                onPressIn={() => setIsPressedButton(true)}
-                onPressOut={() => setIsPressedButton(false)}
+                onPressIn={() =>
+                  setIsPressedButton(prevState => ({
+                    ...prevState,
+                    registerAccountButton: true,
+                  }))
+                }
+                onPressOut={() =>
+                  setIsPressedButton(prevState => ({
+                    ...prevState,
+                    registerAccountButton: false,
+                  }))
+                }
                 onPress={handleSubmit(onSubmit)}
                 disabled={isPosting}
                 style={tw`rounded-md px-3 py-1.5 ${
-                  isPressedButton ? 'bg-sky-500' : 'bg-sky-700'
+                  isPressedButton.registerAccountButton
+                    ? 'bg-sky-500'
+                    : 'bg-sky-700'
                 }`}>
                 {!isPosting ? (
                   <Text style={tw`text-center uppercase font-bold text-white`}>
@@ -362,12 +377,22 @@ export const RegisterScreen = ({navigation}: Props) => {
               ¿Ya tienes cuenta?
             </Text>
             <Pressable
-              onPressIn={() => setIsPressedText(true)}
-              onPressOut={() => setIsPressedText(false)}
+              onPressIn={() =>
+                setIsPressedButton(prevStaet => ({
+                  ...prevStaet,
+                  loginButton: true,
+                }))
+              }
+              onPressOut={() =>
+                setIsPressedButton(prevStaet => ({
+                  ...prevStaet,
+                  loginButton: false,
+                }))
+              }
               onPress={() => navigation.replace('Login')}>
               <Text
                 style={tw`font-semibold leading-6 text-center ${
-                  isPressedText ? 'text-sky-500' : 'text-sky-700'
+                  isPressedButton.loginButton ? 'text-sky-500' : 'text-sky-700'
                 }`}>
                 Inicia sesión aquí.
               </Text>

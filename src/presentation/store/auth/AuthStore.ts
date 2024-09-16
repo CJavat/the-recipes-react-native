@@ -5,8 +5,13 @@ import {
   authForgotPassword,
   authLogin,
   authRegister,
+  checkAuthStatus,
+  reactivateAccount,
 } from '../../../actions/auth/auth.action';
-import {LoginResponse} from '../../../infrastructure/interfaces';
+import {
+  LoginResponse,
+  ReactivateAccountResponse,
+} from '../../../infrastructure/interfaces';
 import {StorageAdapter} from '../../../config/adapter/storage.adapter';
 
 export interface AuthState {
@@ -22,7 +27,8 @@ export interface AuthState {
     password: string,
   ) => Promise<string[]>;
   forgotPassword: (email: string) => Promise<string[]>;
-  // checkStatus: () => Promise<void>;
+  reactivateAccount: (email: string) => Promise<ReactivateAccountResponse>;
+  checkStatus: () => Promise<User>;
   logout: () => Promise<void>;
 }
 
@@ -31,17 +37,18 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   token: undefined,
   user: undefined,
 
+  //? Auth
   login: async (email, password) => {
     const resp = await authLogin(email, password);
     if (resp?.message) {
       set({status: 'unauthenticated', token: undefined, user: undefined});
-      throw resp.message[0];
+      throw resp.message;
     }
 
-    const {token, ...user} = resp!.data as LoginResponse;
+    const user = resp!.data as LoginResponse;
 
-    await StorageAdapter.setItem('token', token);
-    set({status: 'authenticated', token: token, user: user});
+    await StorageAdapter.setItem('token', user.token);
+    set({status: 'authenticated', token: user.token, user: user});
     return true;
   },
 
@@ -63,6 +70,25 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
     return resp.message;
   },
 
+  reactivateAccount: async email => {
+    const resp = await reactivateAccount(email);
+
+    if (!resp.ok) {
+      set({status: 'unauthenticated', token: undefined, user: undefined});
+      throw resp.message;
+    }
+
+    return resp;
+  },
+
+  checkStatus: async () => {
+    const user = await checkAuthStatus();
+    await StorageAdapter.setItem('token', user.token);
+    set({status: 'authenticated', token: user.token, user: user});
+
+    return user;
+  },
+
   logout: async () => {
     try {
       await StorageAdapter.remove('token');
@@ -71,4 +97,6 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
       throw new Error('Error removing token');
     }
   },
+
+  //? Dashboard
 }));

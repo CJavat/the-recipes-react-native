@@ -2,6 +2,7 @@ import {Platform} from 'react-native';
 import axios from 'axios';
 
 import {API_URL_ANDROID, API_URL_IOS, PROD_URL, STAGE} from '@env';
+import {StorageAdapter} from '../adapter/storage.adapter';
 
 export const API_URL =
   STAGE === 'production'
@@ -17,17 +18,14 @@ const recipesApi = axios.create({
   },
 });
 
-//TODO: Terminar Interceptors
 //! Interceptors
-// recipesApi.interceptors.request.use(
-//   async ( config ) => {
-//     const token = await StorageAdapter.getItem('token');
-//     if( token ) {
-//       config.headers['Authorization'] = `Bearer ${token}`;
-//     }
+recipesApi.interceptors.request.use(async config => {
+  const token = await StorageAdapter.getItem('token');
+  if (token) {
+    config.headers['Authorization'] = `Bearer ${token}`;
+  }
 
-//     return config;
-//   }
-// );
+  return config;
+});
 
 export {recipesApi};
