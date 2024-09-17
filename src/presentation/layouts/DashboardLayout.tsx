@@ -3,6 +3,7 @@ import {SafeAreaView, ScrollView, View} from 'react-native';
 import tw from 'twrnc';
 
 import {Footer} from '../components/Footer';
+import {Navbar} from '../components/Navbar';
 
 interface Props {
   children: ReactNode;
@@ -10,15 +11,12 @@ interface Props {
 
 export const DashboardLayout = ({children}: Props) => {
   return (
-    <SafeAreaView>
-      <ScrollView>
-        <View style={{flex: 1}}>
-          {/* <dashboard-navbar [imageUser]="avatar" /> */}
+    <SafeAreaView style={tw`flex-1`}>
+      <ScrollView contentContainerStyle={tw`flex-grow`}>
+        <Navbar />
 
-          <View style={[tw`bg-sky-50 dark:bg-sky-950 px-5 w-full pb-5`]}>
-            {children}
-          </View>
-
+        <View style={tw`flex-1 px-5 w-full pb-5`}>{children}</View>
+        <View style={tw`border-t border-sky-500`}>
           <Footer />
         </View>
       </ScrollView>

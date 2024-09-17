@@ -130,6 +130,6 @@ export const checkAuthStatus = async () => {
   } catch (error) {
     console.log(error);
 
-    throw new Error('Ha ocurrido un errorr');
+    throw 'Ha ocurrido un error';
   }
 };

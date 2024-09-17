@@ -82,11 +82,16 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   },
 
   checkStatus: async () => {
-    const user = await checkAuthStatus();
-    await StorageAdapter.setItem('token', user.token);
-    set({status: 'authenticated', token: user.token, user: user});
+    try {
+      const user = await checkAuthStatus();
+      await StorageAdapter.setItem('token', user.token);
+      set({status: 'authenticated', token: user.token, user: user});
 
-    return user;
+      return user;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   },
 
   logout: async () => {
