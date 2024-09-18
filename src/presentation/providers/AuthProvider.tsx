@@ -1,8 +1,9 @@
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {PropsWithChildren, useEffect} from 'react';
-import {RootStackParams} from '../navigator/Navigator';
 import {useAuthStore} from '../store/auth/AuthStore';
+
+import {RootStackParams} from '../navigator/RootNavigator';
 
 export const AuthProvider = ({children}: PropsWithChildren) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
@@ -17,13 +18,13 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
       if (status === 'authenticated') {
         navigation.reset({
           index: 0,
-          routes: [{name: 'Home'}],
+          routes: [{name: 'Drawer'}],
         });
       } else {
         logout();
         navigation.reset({
           index: 0,
-          routes: [{name: 'Login'}],
+          routes: [{name: 'Auth'}],
         });
       }
     }

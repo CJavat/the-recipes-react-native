@@ -4,7 +4,8 @@ import {useEffect} from 'react';
 import {useColorScheme} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 
-import {Navigator} from './presentation/navigator/Navigator';
+import {RootNavigator} from './presentation/navigator/RootNavigator';
+
 import {useThemeStore} from './presentation/store/theme/ThemeStore';
 import {AuthProvider} from './presentation/providers/AuthProvider';
 
@@ -22,7 +23,7 @@ function TheRecipesApp(): React.JSX.Element {
   return (
     <NavigationContainer theme={theme}>
       <AuthProvider>
-        <Navigator />
+        <RootNavigator />
       </AuthProvider>
     </NavigationContainer>
   );

@@ -15,7 +15,7 @@ import tw from 'twrnc';
 import {StackScreenProps} from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import {RootStackParams} from '../../navigator/Navigator';
+import {AuthStackParams} from '../../navigator/AuthNavigator';
 
 import {useThemeStore} from '../../store/theme/ThemeStore';
 import {useAuthStore} from '../../store/auth/AuthStore';
@@ -23,7 +23,7 @@ import {useAuthStore} from '../../store/auth/AuthStore';
 interface FormInput {
   email: string;
 }
-interface Props extends StackScreenProps<RootStackParams, 'ForgotPassword'> {}
+interface Props extends StackScreenProps<AuthStackParams, 'ForgotPassword'> {}
 
 export const ForgotPassword = ({navigation}: Props) => {
   const {isDark} = useThemeStore();

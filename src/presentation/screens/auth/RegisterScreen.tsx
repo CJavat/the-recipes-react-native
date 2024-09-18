@@ -16,7 +16,7 @@ import tw from 'twrnc';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {StackScreenProps} from '@react-navigation/stack';
 
-import {RootStackParams} from '../../navigator/Navigator';
+import {AuthStackParams} from '../../navigator/AuthNavigator';
 import {useThemeStore} from '../../store/theme/ThemeStore';
 import {useAuthStore} from '../../store/auth/AuthStore';
 
@@ -28,7 +28,7 @@ interface FormInput {
   rePasword: string;
 }
 
-interface Props extends StackScreenProps<RootStackParams, 'Register'> {}
+interface Props extends StackScreenProps<AuthStackParams, 'Register'> {}
 
 type eyePassword = 'eye-outline' | 'eye-off-outline';
 const theRecipesLogo = require('../../../assets/logos/android-chrome-512x512.png');

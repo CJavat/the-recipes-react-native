@@ -15,7 +15,7 @@ import {ScrollView, TextInput} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import {useThemeStore} from '../../store/theme/ThemeStore';
-import {RootStackParams} from '../../navigator/Navigator';
+import {AuthStackParams} from '../../navigator/AuthNavigator';
 import {useAuthStore} from '../../store/auth/AuthStore';
 
 const theRecipesLogo = require('../../../assets/logos/android-chrome-512x512.png');
@@ -24,7 +24,7 @@ interface FormInput {
   email: string;
 }
 interface Props
-  extends StackScreenProps<RootStackParams, 'ReactivateAccount'> {}
+  extends StackScreenProps<AuthStackParams, 'ReactivateAccount'> {}
 
 export const ReactivateAccount = ({navigation, route}: Props) => {
   const {reactivateAccount} = useAuthStore();

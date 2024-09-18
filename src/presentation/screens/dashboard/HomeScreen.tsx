@@ -1,28 +1,41 @@
-import {Pressable, Text, View} from 'react-native';
-
-import {StackScreenProps} from '@react-navigation/stack';
+import {Button, Pressable, Text, View} from 'react-native';
+import {RootStackParams} from '../../navigator/RootNavigator';
+import {DrawerActions, useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 import tw from 'twrnc';
 
-import {RootStackParams} from '../../navigator/Navigator';
 import {useAuthStore} from '../../store/auth/AuthStore';
 import {DashboardLayout} from '../../layouts/DashboardLayout';
+import {DashboardStackParams} from '../../navigator/DashboardNavigator';
 
-interface Props extends StackScreenProps<RootStackParams, 'Home'> {}
+export const HomeScreen = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
+  const navigationStack =
+    useNavigation<StackNavigationProp<DashboardStackParams>>();
 
-export const HomeScreen = ({navigation}: Props) => {
   const {logout} = useAuthStore();
 
   const onLogout = (): void => {
     logout();
     navigation.reset({
       index: 0,
-      routes: [{name: 'Login'}],
+      routes: [{name: 'Auth'}],
     });
   };
 
   return (
     <DashboardLayout>
-      <Text style={{}}>Home Screen</Text>
+      <Text>Home Screen</Text>
+
+      <Button
+        title="Menu"
+        onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+      />
+
+      <Button
+        title="Settings"
+        onPress={() => navigationStack.navigate('Settings')}
+      />
 
       <Pressable
         onPress={onLogout}

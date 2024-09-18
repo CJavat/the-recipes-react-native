@@ -13,24 +13,25 @@ import {
 import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import tw from 'twrnc';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {StackScreenProps} from '@react-navigation/stack';
+import {StackNavigationProp} from '@react-navigation/stack';
 
-import {RootStackParams} from '../../navigator/Navigator';
+import {RootStackParams} from '../../navigator/RootNavigator';
 
 import {useThemeStore} from '../../store/theme/ThemeStore';
 import {useAuthStore} from '../../store/auth/AuthStore';
+import {useNavigation} from '@react-navigation/native';
 
 interface FormInput {
   email: string;
   password: string;
 }
 
-interface Props extends StackScreenProps<RootStackParams, 'Login'> {}
-
 type eyePassword = 'eye-outline' | 'eye-off-outline';
 const theRecipesLogo = require('../../../assets/logos/android-chrome-512x512.png');
 
-export const LoginScreen = ({navigation}: Props) => {
+export const LoginScreen = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
+
   const {isDark} = useThemeStore();
   const {login} = useAuthStore();
   const {
@@ -65,7 +66,7 @@ export const LoginScreen = ({navigation}: Props) => {
 
     try {
       await login(email, password);
-      return navigation.replace('Home');
+      return navigation.replace('Drawer');
     } catch (error) {
       console.log(error);
       Alert.alert('Error Al Ingresar', error as string, [{text: 'OK'}]);
