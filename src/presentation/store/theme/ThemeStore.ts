@@ -12,24 +12,24 @@ export interface ThemeState {
 const DarkTheme: Theme = {
   dark: true,
   colors: {
-    primary: '#075985',
-    background: '#082F49',
-    card: '#075985',
-    text: '#FFFFFF',
-    border: '#0EA5E9',
-    notification: '#082F49',
+    primary: '#075985', // border-sky-800
+    background: '#082F49', // border-sky-950
+    card: '#075985', // border-sky-800
+    text: '#F0F9FF', // border-sky-50
+    border: '#0EA5E9', // border-sky-500
+    notification: '#082F49', // border-sky-950
   },
 };
 
 const LightTheme: Theme = {
   dark: false,
   colors: {
-    primary: '#075985',
-    background: '#F0F9FF',
-    card: '#FFFFFF',
-    text: '#000000',
-    border: '#0EA5E9',
-    notification: '#082F49',
+    primary: '#BAE6FD', // border-sky-200
+    background: '#F0F9FF', // border-sky-50
+    card: '#BAE6FD', // border-sky-200
+    text: '#082F49', // border-sky-950
+    border: '#0EA5E9', // border-sky-500
+    notification: '#F0F9FF', // border-sky-50
   },
 };
 

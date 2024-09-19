@@ -9,6 +9,7 @@ import {RootNavigator} from './presentation/navigator/RootNavigator';
 import {useThemeStore} from './presentation/store/theme/ThemeStore';
 import {AuthProvider} from './presentation/providers/AuthProvider';
 
+//TODO: Hacer que detecte el cambio del tema y se actualice automáticamente
 function TheRecipesApp(): React.JSX.Element {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
