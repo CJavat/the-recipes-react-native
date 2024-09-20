@@ -20,6 +20,7 @@ import {RootStackParams} from '../../navigator/RootNavigator';
 import {useThemeStore} from '../../store/theme/ThemeStore';
 import {useAuthStore} from '../../store/auth/AuthStore';
 import {useNavigation} from '@react-navigation/native';
+import {AuthStackParams} from '../../navigator/AuthNavigator';
 
 interface FormInput {
   email: string;
@@ -31,6 +32,7 @@ const theRecipesLogo = require('../../../assets/logos/android-chrome-512x512.png
 
 export const LoginScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
+  const authNavigation = useNavigation<StackNavigationProp<AuthStackParams>>();
 
   const {isDark} = useThemeStore();
   const {login} = useAuthStore();
@@ -161,7 +163,7 @@ export const LoginScreen = () => {
                         forgotPasswordButton: false,
                       }))
                     }
-                    onPress={() => navigation.push('ForgotPassword')}>
+                    onPress={() => authNavigation.push('ForgotPassword')}>
                     <Text
                       style={tw`text-sm font-semibold ${
                         isPressedButton.forgotPasswordButton
@@ -262,7 +264,7 @@ export const LoginScreen = () => {
                   registerAccountButton: false,
                 }))
               }
-              onPress={() => navigation.replace('Register')}>
+              onPress={() => authNavigation.replace('Register')}>
               <Text
                 style={tw`font-semibold leading-6 text-center ${
                   isPressedButton.registerAccountButton
@@ -290,7 +292,7 @@ export const LoginScreen = () => {
                   reactivateAccountButton: false,
                 }))
               }
-              onPress={() => navigation.navigate('ReactivateAccount')}>
+              onPress={() => authNavigation.navigate('ReactivateAccount')}>
               <Text
                 style={tw`font-semibold leading-6 text-center ${
                   isPressedButton.reactivateAccountButton

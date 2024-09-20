@@ -1,9 +1,10 @@
 import {Text, View} from 'react-native';
+import {DashboardLayout} from '../../layouts/DashboardLayout';
 
 export const CreateRecipeScreen = () => {
   return (
-    <View>
+    <DashboardLayout>
       <Text>CreateRecipeScreen</Text>
-    </View>
+    </DashboardLayout>
   );
 };

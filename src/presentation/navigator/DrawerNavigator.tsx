@@ -18,7 +18,7 @@ export const DrawerNavigator = () => {
 
   return (
     <Drawer.Navigator
-      initialRouteName="Home"
+      initialRouteName="Dashboard"
       drawerContent={props => (
         <View style={{flex: 1}}>
           {/* Logo en la parte superior */}
@@ -46,9 +46,10 @@ export const DrawerNavigator = () => {
         drawerInactiveTintColor: `${isDark ? '#F0F9FF' : '#082F49'}`,
       }}>
       <Drawer.Screen
-        name="Home"
+        name="Dashboard"
         component={DashboardNavigator}
         options={{
+          title: 'Inicio',
           headerShown: false,
           drawerIcon: ({color}) => (
             <Icon name="home-outline" size={25} color={color} />
@@ -59,6 +60,7 @@ export const DrawerNavigator = () => {
         name="Recipes"
         component={RecipesScreen}
         options={{
+          title: 'Recetas',
           headerShown: false,
           drawerIcon: ({color}) => (
             <Icon name="cafe-outline" size={25} color={color} />
@@ -69,6 +71,7 @@ export const DrawerNavigator = () => {
         name="Categories"
         component={CategoriesScreen}
         options={{
+          title: 'Categorías',
           headerShown: false,
           drawerIcon: ({color}) => (
             <Icon name="apps-outline" size={25} color={color} />
@@ -79,6 +82,7 @@ export const DrawerNavigator = () => {
         name="MyFavorites"
         component={MyFavoritesScreen}
         options={{
+          title: 'Recetas Favoritas',
           headerShown: false,
           drawerIcon: ({color}) => (
             <Icon name="heart-circle-outline" size={25} color={color} />

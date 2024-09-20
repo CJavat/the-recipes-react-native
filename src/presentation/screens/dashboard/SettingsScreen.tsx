@@ -1,9 +1,10 @@
 import {Text, View} from 'react-native';
+import {DashboardLayout} from '../../layouts/DashboardLayout';
 
 export const SettingsScreen = () => {
   return (
-    <View>
+    <DashboardLayout>
       <Text>SettingsScreen</Text>
-    </View>
+    </DashboardLayout>
   );
 };

@@ -1,9 +1,10 @@
 import {Text, View} from 'react-native';
+import {DashboardLayout} from '../../layouts/DashboardLayout';
 
 export const CategoryScreen = () => {
   return (
-    <View>
+    <DashboardLayout>
       <Text>CategoryScreen</Text>
-    </View>
+    </DashboardLayout>
   );
 };

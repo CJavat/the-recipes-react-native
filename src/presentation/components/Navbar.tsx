@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {Search} from './Search';
 import {AuthStackParams} from '../navigator/AuthNavigator';
 import {useThemeStore} from '../store/theme/ThemeStore';
+import {UserMenu} from './UserMenu';
 
 export const Navbar = () => {
   const theRecipesLogo = require('../../assets/logos/android-chrome-512x512.png');
@@ -42,19 +43,7 @@ export const Navbar = () => {
         <Search />
       </View>
 
-      <View style={tw`relative flex items-center gap-3 pr-2`}>
-        {/* 
-          //TODO: Terminar esta parte del menú y hacerlo en un componente independiente
-        */}
-        <Pressable style={tw`h-8 w-8 relative flex rounded-full text-sm`}>
-          <Image
-            style={tw`h-8 w-8 rounded-full`}
-            // source={theRecipesLogo}
-            src="http://res.cloudinary.com/dsq0czzcy/image/upload/v1726097032/the-recipes/users/ohcjte7cgfivlasd7uhd.jpg"
-            alt="The Recipes Logo"
-          />
-        </Pressable>
-      </View>
+      <UserMenu />
     </View>
   );
 };

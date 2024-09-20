@@ -1,9 +1,10 @@
 import {Text, View} from 'react-native';
+import {DashboardLayout} from '../../layouts/DashboardLayout';
 
 export const SearchScreen = () => {
   return (
-    <View>
+    <DashboardLayout>
       <Text>SearchScreen</Text>
-    </View>
+    </DashboardLayout>
   );
 };

@@ -1,9 +1,10 @@
 import {Text, View} from 'react-native';
+import {DashboardLayout} from '../../layouts/DashboardLayout';
 
 export const DeleteAccountScreen = () => {
   return (
-    <View>
+    <DashboardLayout>
       <Text>DeleteAccountScreen</Text>
-    </View>
+    </DashboardLayout>
   );
 };

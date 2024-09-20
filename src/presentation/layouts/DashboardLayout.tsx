@@ -16,6 +16,7 @@ export const DashboardLayout = ({children}: Props) => {
         <Navbar />
 
         <View style={tw`flex-1 px-5 w-full pb-5`}>{children}</View>
+
         <View style={tw`border-t border-sky-500`}>
           <Footer />
         </View>

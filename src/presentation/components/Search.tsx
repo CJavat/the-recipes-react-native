@@ -16,7 +16,7 @@ export const Search = () => {
 
         <TextInput
           id="simple-search"
-          style={tw`bg-transparent border border-sky-900 text-sm rounded-lg block w-full pl-7 flex-1 ${
+          style={tw`bg-transparent border border-sky-900 text-sm rounded-lg w-full pl-7 flex-1 ${
             isDark ? 'text-white' : 'text-gray-900'
           }`}
           placeholder="Buscar recetas"
