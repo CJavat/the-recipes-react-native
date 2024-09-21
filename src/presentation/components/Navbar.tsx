@@ -24,10 +24,12 @@ export const Navbar = () => {
       <View>
         <Pressable
           onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-          style={tw`relative inline-flex items-center justify-center rounded-md  ${
-            isDark ? 'text-white' : 'text-black'
-          }`}>
-          <Icon name="menu-outline" size={30} />
+          style={tw`relative items-center justify-center rounded-md`}>
+          <Icon
+            name="menu-outline"
+            size={30}
+            style={tw`${isDark ? 'text-white' : 'text-black'}`}
+          />
         </Pressable>
       </View>
 

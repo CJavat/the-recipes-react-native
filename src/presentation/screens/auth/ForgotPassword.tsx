@@ -58,6 +58,7 @@ export const ForgotPassword = ({navigation}: Props) => {
         },
       ]);
     } catch (error) {
+      console.log(error);
       Alert.alert('Error Al Ingresar', error as string, [{text: 'OK'}]);
     } finally {
       setIsPosting(false);

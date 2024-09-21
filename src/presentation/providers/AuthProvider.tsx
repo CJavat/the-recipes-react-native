@@ -4,10 +4,14 @@ import {PropsWithChildren, useEffect} from 'react';
 import {useAuthStore} from '../store/auth/AuthStore';
 
 import {RootStackParams} from '../navigator/RootNavigator';
+import {ActivityIndicator, View} from 'react-native';
+import tw from 'twrnc';
+import {useThemeStore} from '../store/theme/ThemeStore';
 
 export const AuthProvider = ({children}: PropsWithChildren) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
-  const {checkStatus, status, logout} = useAuthStore();
+  const {checkStatus, status, logout, user} = useAuthStore();
+  const {isDark} = useThemeStore();
 
   useEffect(() => {
     checkStatus();
@@ -30,5 +34,14 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
     }
   }, [status]);
 
-  return <>{children}</>;
+  return status !== 'checking' ? (
+    <>{children}</>
+  ) : (
+    <View
+      style={tw`flex-1 items-center justify-center ${
+        isDark ? 'bg-sky-950' : 'bg-sky-50'
+      }  `}>
+      <ActivityIndicator size={60} color={isDark ? '#F0F9FF' : '#082F49'} />
+    </View>
+  );
 };

@@ -80,6 +80,7 @@ export const RegisterScreen = ({navigation}: Props) => {
 
       return;
     } catch (error) {
+      console.log(error);
       Alert.alert('Error Al Ingresar', error as string, [{text: 'OK'}]);
     } finally {
       setIsPosting(false);

@@ -37,12 +37,11 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   token: undefined,
   user: undefined,
 
-  //? Auth
   login: async (email, password) => {
     const resp = await authLogin(email, password);
     if (resp?.message) {
       set({status: 'unauthenticated', token: undefined, user: undefined});
-      throw resp.message;
+      throw resp.message[0];
     }
 
     const user = resp!.data as LoginResponse;
@@ -65,7 +64,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 
   forgotPassword: async email => {
     const resp = await authForgotPassword(email);
-    if (!resp.ok) throw resp.message;
+    if (!resp.ok) throw resp.message[0];
 
     return resp.message;
   },
@@ -75,7 +74,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 
     if (!resp.ok) {
       set({status: 'unauthenticated', token: undefined, user: undefined});
-      throw resp.message;
+      throw resp.message[0];
     }
 
     return resp;
@@ -90,7 +89,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
       return user;
     } catch (error) {
       console.log(error);
-      throw error;
+      set({status: 'unauthenticated', token: undefined, user: undefined});
     }
   },
 
@@ -102,6 +101,4 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
       throw new Error('Error removing token');
     }
   },
-
-  //? Dashboard
 }));

@@ -31,7 +31,7 @@ export const authLogin = async (email: string, password: string) => {
 
       return {
         data: null,
-        message: loginError?.message ?? 'Ocurrió un error desconocido',
+        message: loginError?.message ?? ['Ocurrió un error desconocido'],
       };
     }
 
@@ -60,7 +60,7 @@ export const authRegister = async (user: RegisterUser) => {
 
       return {
         ok: false,
-        message: loginError?.message ?? 'Ocurrió un error desconocido',
+        message: loginError?.message ?? ['Ocurrió un error desconocido'],
       };
     }
 
@@ -85,7 +85,7 @@ export const authForgotPassword = async (email: string) => {
 
       return {
         ok: false,
-        message: loginError?.message ?? 'Ocurrió un error desconocido',
+        message: loginError?.message ?? ['Ocurrió un error desconocido'],
       };
     }
 
@@ -111,7 +111,7 @@ export const reactivateAccount = async (email: string) => {
 
       return {
         ok: false,
-        message: loginError?.message ?? 'Ocurrió un error desconocido',
+        message: loginError?.message ?? ['Ocurrió un error desconocido'],
       };
     }
 
@@ -130,6 +130,6 @@ export const checkAuthStatus = async () => {
   } catch (error) {
     console.log(error);
 
-    throw 'Ha ocurrido un error';
+    throw ['Ha ocurrido un error'];
   }
 };

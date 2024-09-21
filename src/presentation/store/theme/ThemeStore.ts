@@ -6,6 +6,7 @@ export interface ThemeState {
   isDark: boolean;
   theme: Theme;
 
+  setTheme: (theme: string) => void;
   toggleTheme: (isDarkTheme: boolean) => void;
 }
 
@@ -36,6 +37,13 @@ const LightTheme: Theme = {
 export const useThemeStore = create<ThemeState>()((set, get) => ({
   isDark: false,
   theme: LightTheme,
+
+  setTheme: (theme: string) => {
+    set({
+      isDark: theme === 'dark' ? true : false,
+      theme: theme === 'dark' ? DarkTheme : LightTheme,
+    });
+  },
 
   toggleTheme: isDarkTheme => {
     set({isDark: isDarkTheme, theme: isDarkTheme ? DarkTheme : LightTheme});

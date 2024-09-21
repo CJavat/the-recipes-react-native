@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
   Image,
   Pressable,
@@ -14,6 +14,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {useAuthStore} from '../store/auth/AuthStore';
 import {useThemeStore} from '../store/theme/ThemeStore';
 import {DashboardStackParams} from '../navigator/DashboardNavigator';
+import {API_URL} from '../../config/api/recipesApi';
 
 export interface ProfileOptions {
   id: string;
@@ -47,9 +48,21 @@ export const UserMenu = () => {
   const navigation = useNavigation<StackNavigationProp<DashboardStackParams>>();
 
   const route = useRoute();
-  const {logout} = useAuthStore();
+  const {user, logout} = useAuthStore();
   const {isDark} = useThemeStore();
+
   const [isExpandedProfile, setIsExpandedProfile] = useState(false);
+  const [userImageProfile, setUserImageProfile] = useState('');
+
+  useEffect(() => {
+    const backendUrl = API_URL.replace('/api', '');
+
+    if (user?.avatar?.startsWith('http')) {
+      setUserImageProfile(user.avatar);
+    } else {
+      setUserImageProfile(`${backendUrl}/no-user-image.jpg`);
+    }
+  }, []);
 
   const profileMenuOptionSelected = (profile: ProfileOptions) => {
     setIsExpandedProfile(prevState => !prevState);
@@ -60,29 +73,23 @@ export const UserMenu = () => {
     logout();
   };
 
-  const handleOutsidePress = () => {
-    if (isExpandedProfile) {
-      setIsExpandedProfile(false); // Cierra el menú si está abierto
-    }
-  };
-
   return (
     <View style={tw`relative flex items-center gap-3 pr-2`}>
       <Pressable
         onPress={() => setIsExpandedProfile(prevState => !prevState)}
-        style={tw`h-8 w-8 relative flex rounded-full text-sm`}>
+        style={tw`h-10 w-10 relative flex rounded-full text-sm`}>
         <Image
-          style={tw`h-8 w-8 rounded-full`}
+          style={tw`h-10 w-10 rounded-full border border-sky-500`}
           //? source={theRecipesLogo}
-          src="http://res.cloudinary.com/dsq0czzcy/image/upload/v1726097032/the-recipes/users/ohcjte7cgfivlasd7uhd.jpg"
-          alt="The Recipes Logo"
+          src={userImageProfile}
+          alt="User Image"
         />
       </Pressable>
 
       {isExpandedProfile && (
         <View
           id="user-menu"
-          style={tw`absolute right-0 top-8 z-50 mt-2 w-48 origin-bottom-right rounded-md py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none
+          style={tw`absolute right-0 top-8 z-50 mt-2 w-48 rounded-md py-1 shadow-lg focus:outline-none
           ${isDark ? 'bg-sky-950' : 'bg-sky-50'}
         `}>
           {profileRoutes.map(profile => (

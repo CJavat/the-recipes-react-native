@@ -13,7 +13,7 @@ export const HomeScreen = () => {
   const navigationStack =
     useNavigation<StackNavigationProp<DashboardStackParams>>();
 
-  const {logout} = useAuthStore();
+  const {user, logout} = useAuthStore();
 
   const onLogout = (): void => {
     logout();
