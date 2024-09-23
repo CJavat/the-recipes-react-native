@@ -5,6 +5,7 @@ import {
   Text,
   View,
   TouchableWithoutFeedback,
+  ActivityIndicator,
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -78,12 +79,15 @@ export const UserMenu = () => {
       <Pressable
         onPress={() => setIsExpandedProfile(prevState => !prevState)}
         style={tw`h-10 w-10 relative flex rounded-full text-sm`}>
-        <Image
-          style={tw`h-10 w-10 rounded-full border border-sky-500`}
-          //? source={theRecipesLogo}
-          src={userImageProfile}
-          alt="User Image"
-        />
+        {userImageProfile ? (
+          <Image
+            style={tw`h-10 w-10 rounded-full border border-sky-500`}
+            src={userImageProfile}
+            alt="User Image"
+          />
+        ) : (
+          <ActivityIndicator style={tw`h-10 w-10`} />
+        )}
       </Pressable>
 
       {isExpandedProfile && (
