@@ -27,7 +27,7 @@ interface Props extends StackScreenProps<AuthStackParams, 'ForgotPassword'> {}
 
 export const ForgotPassword = ({navigation}: Props) => {
   const {isDark} = useThemeStore();
-  const {user, checkStatus, forgotPassword} = useAuthStore();
+  const {forgotPassword} = useAuthStore();
   const {
     control,
     handleSubmit,

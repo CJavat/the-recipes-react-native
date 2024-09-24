@@ -16,21 +16,28 @@ import {SearchScreen} from '../screens/dashboard/SearchScreen';
 import {SettingsScreen} from '../screens/dashboard/SettingsScreen';
 import {UpdateImageScreen} from '../screens/dashboard/UpdateImageScreen';
 import {UpdatePasswordScreen} from '../screens/dashboard/UpdatePasswordScreen';
+import {EditRecipeScreen} from '../screens/dashboard/EditRecipeScreen';
 
 export type DashboardStackParams = {
   Home: undefined;
+
   Categories: undefined;
   Category: {id: string};
-  CreateRecipe: undefined;
-  DeleteAccount: undefined;
-  EditAccount: undefined;
+
   MyAccount: undefined;
+  EditAccount: undefined;
+  DeleteAccount: undefined;
+
   MyFavorites: undefined;
   MyRecipes: undefined;
-  RecipesByUser: {id: string};
-  Recipe: {id: string; isFavorite: boolean};
+
   Recipes: undefined;
+  RecipesByUser: {id: string};
   SearchRecipes: undefined;
+  Recipe: {id: string; isFavorite: boolean};
+  CreateRecipe: undefined;
+  EditRecipe: {id: string; isFavorite: boolean};
+
   Settings: undefined;
   UpdateImage: undefined;
   UpdatePassword: undefined;
@@ -46,18 +53,24 @@ export const DashboardNavigator = () => {
         headerShown: false,
       }}>
       <Dashboard.Screen name="Home" component={HomeScreen} />
+
       <Dashboard.Screen name="Categories" component={CategoriesScreen} />
       <Dashboard.Screen name="Category" component={CategoryScreen} />
-      <Dashboard.Screen name="CreateRecipe" component={CreateRecipeScreen} />
-      <Dashboard.Screen name="DeleteAccount" component={DeleteAccountScreen} />
-      <Dashboard.Screen name="EditAccount" component={EditAccountScreen} />
+
       <Dashboard.Screen name="MyAccount" component={MyAccountScreen} />
+      <Dashboard.Screen name="EditAccount" component={EditAccountScreen} />
+      <Dashboard.Screen name="DeleteAccount" component={DeleteAccountScreen} />
+
       <Dashboard.Screen name="MyFavorites" component={MyFavoritesScreen} />
       <Dashboard.Screen name="MyRecipes" component={MyRecipesScreen} />
-      <Dashboard.Screen name="RecipesByUser" component={RecipesByUserScreen} />
-      <Dashboard.Screen name="Recipe" component={RecipeScreen} />
+
       <Dashboard.Screen name="Recipes" component={RecipesScreen} />
+      <Dashboard.Screen name="RecipesByUser" component={RecipesByUserScreen} />
       <Dashboard.Screen name="SearchRecipes" component={SearchScreen} />
+      <Dashboard.Screen name="Recipe" component={RecipeScreen} />
+      <Dashboard.Screen name="CreateRecipe" component={CreateRecipeScreen} />
+      <Dashboard.Screen name="EditRecipe" component={EditRecipeScreen} />
+
       <Dashboard.Screen name="Settings" component={SettingsScreen} />
       <Dashboard.Screen name="UpdateImage" component={UpdateImageScreen} />
       <Dashboard.Screen

@@ -9,10 +9,11 @@ import {Search} from './Search';
 import {AuthStackParams} from '../navigator/AuthNavigator';
 import {useThemeStore} from '../store/theme/ThemeStore';
 import {UserMenu} from './UserMenu';
+import {DashboardStackParams} from '../navigator/DashboardNavigator';
 
 export const Navbar = () => {
   const theRecipesLogo = require('../../assets/logos/android-chrome-512x512.png');
-  const navigation = useNavigation<StackNavigationProp<AuthStackParams>>();
+  const navigation = useNavigation<StackNavigationProp<DashboardStackParams>>();
 
   const {isDark} = useThemeStore();
 
@@ -34,11 +35,13 @@ export const Navbar = () => {
       </View>
 
       <View>
-        <Image
-          style={tw`h-8 w-8 rounded-md`}
-          source={theRecipesLogo}
-          alt="The Recipes Logo"
-        />
+        <Pressable onPress={() => navigation.navigate('Home')}>
+          <Image
+            style={tw`h-8 w-8 rounded-md`}
+            source={theRecipesLogo}
+            alt="The Recipes Logo"
+          />
+        </Pressable>
       </View>
 
       <View style={tw`flex-1`}>

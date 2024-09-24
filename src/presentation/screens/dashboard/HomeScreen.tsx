@@ -83,6 +83,7 @@ export const HomeScreen = () => {
   return (
     <DashboardLayout>
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={data}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item}) => <RecipeCard key={item.id} {...item} />}
