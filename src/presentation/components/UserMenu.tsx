@@ -86,7 +86,10 @@ export const UserMenu = () => {
             alt="User Image"
           />
         ) : (
-          <ActivityIndicator style={tw`h-10 w-10`} />
+          <ActivityIndicator
+            style={tw`h-10 w-10`}
+            color={isDark ? '#F0F9FF' : '#082F49'}
+          />
         )}
       </Pressable>
 

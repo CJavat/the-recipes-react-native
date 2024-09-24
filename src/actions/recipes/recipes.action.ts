@@ -1,25 +1,14 @@
 import {recipesApi} from '../../config/api/recipesApi';
 import {
   FavoritesResponse,
+  Recipe,
   RecipesResponse,
 } from '../../infrastructure/interfaces';
 
+//? Favorites
 export const getFavorites = async (): Promise<FavoritesResponse[]> => {
   try {
     const {data} = await recipesApi.get<FavoritesResponse[]>('/favorites');
-
-    //TODO: Crear en el recipesStore una variable llamada currentFavorites para tenerla a la mano
-    // const formatRecipes = data.map((fav) => {
-    //   return {
-    //     id: fav.recipe.id,
-    //     image: fav.recipe.image,
-    //     title: fav.recipe.title,
-    //     User: {
-    //       firstName: fav.user.firstName,
-    //     },
-    //     isFavorite: true,
-    //   };
-    // })
 
     return data;
   } catch (error) {
@@ -30,7 +19,7 @@ export const getFavorites = async (): Promise<FavoritesResponse[]> => {
 
 export const addFavorite = async (recipeId: string): Promise<void> => {
   try {
-    //TODO: TERMIANR FUNCIÓN
+    await recipesApi.get(`/favorites/${recipeId}`);
   } catch (error) {
     throw error;
   }
@@ -38,12 +27,13 @@ export const addFavorite = async (recipeId: string): Promise<void> => {
 
 export const removeFavorite = async (recipeId: string): Promise<void> => {
   try {
-    //TODO: TERMIANR FUNCIÓN
+    await recipesApi.delete(`/favorites/${recipeId}`);
   } catch (error) {
     throw error;
   }
 };
 
+//? Recipes
 export const getAllRecipes = async (
   limit: number,
   offset: number | null,
@@ -60,3 +50,15 @@ export const getAllRecipes = async (
     throw error;
   }
 };
+
+export const getRecipeById = async (recipeId: string): Promise<Recipe> => {
+  try {
+    const {data} = await recipesApi.get(`/recipes/${recipeId}`);
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+//? Categories

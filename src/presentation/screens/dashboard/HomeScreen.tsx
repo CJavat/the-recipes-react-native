@@ -1,12 +1,5 @@
 import {useEffect, useState} from 'react';
-import {
-  ActivityIndicator,
-  Button,
-  FlatList,
-  Pressable,
-  Text,
-  View,
-} from 'react-native';
+import {ActivityIndicator, FlatList, Text, View} from 'react-native';
 import tw from 'twrnc';
 
 import {DashboardLayout} from '../../layouts/DashboardLayout';
@@ -18,8 +11,11 @@ import {
   CardRecipe,
   FavoritesResponse,
 } from '../../../infrastructure/interfaces';
+import {Footer} from '../../components/Footer';
+import {useThemeStore} from '../../store/theme/ThemeStore';
 
 export const HomeScreen = () => {
+  const {isDark} = useThemeStore();
   const {getRecipes, getFavorites} = useRecipeStore();
 
   const [data, setData] = useState<CardRecipe[]>([]);
@@ -74,14 +70,18 @@ export const HomeScreen = () => {
   const renderFooter = () => {
     return loading ? (
       <View style={{padding: 10}}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator
+          size="large"
+          color={isDark ? '#F0F9FF' : '#082F49'}
+        />
       </View>
-    ) : null;
+    ) : (
+      <Footer />
+    );
   };
 
   return (
     <DashboardLayout>
-      <Text>Gola</Text>
       <FlatList
         data={data}
         keyExtractor={(item, index) => index.toString()}

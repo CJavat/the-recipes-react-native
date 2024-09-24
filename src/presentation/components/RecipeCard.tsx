@@ -1,25 +1,37 @@
-import {ActivityIndicator, Image, Pressable, Text, View} from 'react-native';
+import {useEffect, useState} from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  Animated,
+  Image,
+  Pressable,
+  Text,
+  View,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import tw from 'twrnc';
-
-import {useThemeStore} from '../store/theme/ThemeStore';
-
-import {CardRecipe} from '../../infrastructure/interfaces';
+import {AxiosError} from 'axios';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {DashboardStackParams} from '../navigator/DashboardNavigator';
-import {useEffect, useState} from 'react';
-import {API_URL} from '../../config/api/recipesApi';
+
+import {useThemeStore} from '../store/theme/ThemeStore';
 import {useRecipeStore} from '../store/dashboard/RecipeStore';
+
+import {DashboardStackParams} from '../navigator/DashboardNavigator';
+import {API_URL} from '../../config/api/recipesApi';
+import {CardRecipe} from '../../infrastructure/interfaces';
 
 export const RecipeCard = (recipe: CardRecipe) => {
   const navigation = useNavigation<StackNavigationProp<DashboardStackParams>>();
   const {isDark} = useThemeStore();
-  // const {addFavorite, removeFavorite} = useRecipeStore(); //TODO: Agregar el add y remove favorite
+  const {addFavorite, removeFavorite} = useRecipeStore();
 
   const [imageRecipe, setImageRecipe] = useState('');
+  const [isFavoriteRecipe, setIsFavoriteRecipe] = useState(false);
+  const [scaleValue] = useState(new Animated.Value(1));
 
   useEffect(() => {
+    setIsFavoriteRecipe(recipe.isFavorite);
     const backendUrl = API_URL.replace('/api', '');
 
     if (recipe.image.startsWith('http')) {
@@ -32,38 +44,86 @@ export const RecipeCard = (recipe: CardRecipe) => {
   const toggleSubmit = () => {
     if (!recipe) return;
 
-    let isFavorite = recipe.isFavorite;
-    isFavorite = !isFavorite;
+    setIsFavoriteRecipe(prevStatus => !prevStatus);
 
-    isFavorite ? addFavorite(recipe.id) : removeFavorite(recipe.id);
+    !isFavoriteRecipe
+      ? handleAddFavorite(recipe.id)
+      : handleRemoveFavorite(recipe.id);
   };
 
-  const addFavorite = async (id: string) => {
-    //TODO: TERMINAR ESTA FUNNCIÓN
-    console.log('adding favorite');
+  const handleAddFavorite = async (id: string) => {
+    if (!id) return;
+
+    try {
+      await addFavorite(id);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        Alert.alert('Error', error?.response?.data.message[0], [{text: 'Ok'}]);
+        return;
+      }
+
+      Alert.alert('Error', 'No se pudo agregar a tu lista de favoritos', [
+        {text: 'Ok'},
+      ]);
+
+      return;
+    }
   };
 
-  const removeFavorite = async (id: string) => {
-    //TODO: TERMINAR ESTA FUNNCIÓN
-    console.log('removing favorite');
+  const handleRemoveFavorite = async (id: string) => {
+    if (!id) return;
+
+    try {
+      await removeFavorite(id);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        Alert.alert('Error', error?.response?.data.message[0], [{text: 'Ok'}]);
+        return;
+      }
+      Alert.alert('Error', 'No se pudo eliminar de tu lista de favoritos', [
+        {text: 'Ok'},
+      ]);
+
+      return;
+    }
+  };
+
+  //? Animación del corazón
+  const handlePressIn = () => {
+    Animated.spring(scaleValue, {
+      toValue: 0.8, // Tamaño pequeño
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.spring(scaleValue, {
+      toValue: 1, // Tamaño original
+      useNativeDriver: true,
+    }).start();
   };
 
   return (
     <View style={tw`relative w-full my-5`}>
-      {/* 
-        //TODO: Agregarle un param al navegar a la pantalla de recipe
-      */}
       <Pressable
         style={tw`flex flex-row gap-4`}
-        onPress={() => navigation.navigate('Recipe')}>
+        onPress={() =>
+          navigation.navigate('Recipe', {
+            id: recipe.id,
+            isFavorite: isFavoriteRecipe,
+          })
+        }>
         {imageRecipe ? (
           <Image
-            style={tw`w-20 h-20 border rounded-md object-cover`}
+            style={tw`w-20 h-20 border rounded-md`}
             src={imageRecipe}
             alt={recipe.title}
           />
         ) : (
-          <ActivityIndicator style={tw`w-20 h-20`} />
+          <ActivityIndicator
+            style={tw`w-20 h-20`}
+            color={isDark ? '#F0F9FF' : '#082F49'}
+          />
         )}
 
         <View style={tw`flex justify-evenly h-20 w-6/12`}>
@@ -77,12 +137,18 @@ export const RecipeCard = (recipe: CardRecipe) => {
         </View>
       </Pressable>
 
-      <Pressable style={tw`absolute top-0 right-0`} onPress={toggleSubmit}>
-        <Icon
-          name={recipe.isFavorite ? 'heart' : 'heart-outline'}
-          size={40}
-          style={tw`text-red-500`}
-        />
+      <Pressable
+        style={tw`absolute top-0 right-0 justify-center items-center`}
+        onPress={toggleSubmit}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}>
+        <Animated.View style={[{transform: [{scale: scaleValue}]}]}>
+          <Icon
+            name={isFavoriteRecipe ? 'heart' : 'heart-outline'}
+            size={40}
+            style={tw`text-red-500`}
+          />
+        </Animated.View>
       </Pressable>
     </View>
   );

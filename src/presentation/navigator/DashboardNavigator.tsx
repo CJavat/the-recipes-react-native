@@ -20,15 +20,15 @@ import {UpdatePasswordScreen} from '../screens/dashboard/UpdatePasswordScreen';
 export type DashboardStackParams = {
   Home: undefined;
   Categories: undefined;
-  Category: undefined;
+  Category: {id: string};
   CreateRecipe: undefined;
   DeleteAccount: undefined;
   EditAccount: undefined;
   MyAccount: undefined;
   MyFavorites: undefined;
   MyRecipes: undefined;
-  RecipesByUser: undefined;
-  Recipe: undefined;
+  RecipesByUser: {id: string};
+  Recipe: {id: string; isFavorite: boolean};
   Recipes: undefined;
   SearchRecipes: undefined;
   Settings: undefined;
