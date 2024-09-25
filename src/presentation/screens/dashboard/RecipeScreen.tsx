@@ -87,6 +87,7 @@ export const RecipeScreen = () => {
   };
 
   const deleteMyRecipe = async () => {
+    //TODO: TERMINAR ESTA FUNCIÓN
     console.log('Deleting my recipe');
   };
 

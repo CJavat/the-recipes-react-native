@@ -22,7 +22,7 @@ export const Navbar = () => {
       style={tw`px-1 flex-row justify-evenly items-center w-full border-b z-50 gap-5 py-2 ${
         isDark ? 'bg-sky-950 border-b-sky-900' : 'bg-sky-50 border-b-sky-200'
       }`}>
-      <View>
+      <View style={tw`ml-2`}>
         <Pressable
           onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
           style={tw`relative items-center justify-center rounded-md`}>

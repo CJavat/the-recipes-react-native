@@ -1,5 +1,6 @@
 import {recipesApi} from '../../config/api/recipesApi';
 import {
+  CategoriesResponse,
   FavoritesResponse,
   Recipe,
   RecipesResponse,
@@ -62,3 +63,14 @@ export const getRecipeById = async (recipeId: string): Promise<Recipe> => {
 };
 
 //? Categories
+
+export const getAllCategories = async (): Promise<CategoriesResponse[]> => {
+  try {
+    const {data} = await recipesApi.get('categories');
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

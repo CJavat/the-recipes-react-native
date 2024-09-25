@@ -1,16 +1,17 @@
 import {useCallback, useState} from 'react';
 import {ActivityIndicator, FlatList, View} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
 import tw from 'twrnc';
 
 import {DashboardLayout} from '../../layouts/DashboardLayout';
 import {RecipeCard} from '../../components/RecipeCard';
+import {AddRecipeButton} from '../../components/AddRecipeButton';
+import {Footer} from '../../components/Footer';
 
 import {useRecipeStore} from '../../store/dashboard/RecipeStore';
+import {useThemeStore} from '../../store/theme/ThemeStore';
 
 import {CardRecipe} from '../../../infrastructure/interfaces';
-import {Footer} from '../../components/Footer';
-import {useThemeStore} from '../../store/theme/ThemeStore';
-import {useFocusEffect} from '@react-navigation/native';
 
 export const HomeScreen = () => {
   const {isDark} = useThemeStore();
@@ -79,6 +80,7 @@ export const HomeScreen = () => {
       <Footer />
     );
   };
+
   return (
     <DashboardLayout>
       {loading ? (
@@ -86,16 +88,20 @@ export const HomeScreen = () => {
           <ActivityIndicator size={50} />
         </View>
       ) : (
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          data={data}
-          extraData={data} // Forzar el render cuando cambia `data`
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({item}) => <RecipeCard key={item.id} {...item} />}
-          onEndReached={handleLoadMoreData}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={renderFooter}
-        />
+        <>
+          <AddRecipeButton />
+
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            data={data}
+            extraData={data} // Forzar el render cuando cambia `data`
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item}) => <RecipeCard key={item.id} {...item} />}
+            onEndReached={handleLoadMoreData}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={renderFooter}
+          />
+        </>
       )}
     </DashboardLayout>
   );

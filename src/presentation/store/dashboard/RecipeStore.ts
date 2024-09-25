@@ -2,6 +2,7 @@ import {create} from 'zustand';
 
 import {
   addFavorite,
+  getAllCategories,
   getAllRecipes,
   getFavorites,
   getRecipeById,
@@ -10,6 +11,7 @@ import {
 
 import {
   CardRecipe,
+  CategoriesResponse,
   FavoritesResponse,
   Recipe,
   RecipesResponse,
@@ -28,6 +30,7 @@ export interface RecipeState {
   getRecipe: (id: string) => Promise<Recipe>;
 
   //? Categories
+  getCategories: () => Promise<CategoriesResponse[]>;
 }
 
 export const useRecipeStore = create<RecipeState>()((set, get) => ({
@@ -106,4 +109,14 @@ export const useRecipeStore = create<RecipeState>()((set, get) => ({
   },
 
   //? Categories
+  getCategories: async () => {
+    try {
+      const resp = await getAllCategories();
+      if (!resp) throw ['No hay categorias por mostrar'];
+
+      return resp;
+    } catch (error) {
+      throw error;
+    }
+  },
 }));
