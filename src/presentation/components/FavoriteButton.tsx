@@ -14,15 +14,19 @@ interface Props {
 }
 
 export const FavoriteButton = ({recipe, isFavorite}: Props) => {
-  const {addFavorite, removeFavorite} = useRecipeStore();
+  const {myFavorites, getFavorites, addFavorite, removeFavorite} =
+    useRecipeStore();
 
   const [isFavoriteRecipe, setIsFavoriteRecipe] = useState(false);
   const [scaleValue] = useState(new Animated.Value(1));
 
   useEffect(() => {
-    console.log(isFavorite);
     setIsFavoriteRecipe(isFavorite);
   }, []);
+
+  // useEffect(() => {
+  //   console.log(JSON.stringify(myFavorites, null, 4));
+  // }, [myFavorites]);
 
   const toggleSubmit = () => {
     if (!recipe) return;
@@ -39,7 +43,9 @@ export const FavoriteButton = ({recipe, isFavorite}: Props) => {
 
     try {
       await addFavorite(id);
+      await getFavorites();
     } catch (error) {
+      console.log(error);
       if (error instanceof AxiosError) {
         Alert.alert('Error', error?.response?.data.message[0], [{text: 'Ok'}]);
         return;
@@ -58,6 +64,7 @@ export const FavoriteButton = ({recipe, isFavorite}: Props) => {
 
     try {
       await removeFavorite(id);
+      await getFavorites();
     } catch (error) {
       if (error instanceof AxiosError) {
         Alert.alert('Error', error?.response?.data.message[0], [{text: 'Ok'}]);
@@ -102,5 +109,3 @@ export const FavoriteButton = ({recipe, isFavorite}: Props) => {
     </Pressable>
   );
 };
-
-//TODO: Ya se agregó el RecipeScreen y RecipeCard, falta hacer que se sincronicen porque cuando se agrega o elmina y cambio de pantalla no se actualiza. Agregarlo en el store y cad que se llame la acción, volver a llamar el getfavorites y después agregarlos a la variable global y ahí empezar a hacer todo

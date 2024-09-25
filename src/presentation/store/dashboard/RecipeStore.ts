@@ -66,8 +66,8 @@ export const useRecipeStore = create<RecipeState>()((set, get) => ({
   addFavorite: async id => {
     try {
       await addFavorite(id);
-      // getFavorites();
     } catch (error) {
+      set({myFavorites: undefined});
       throw error;
     }
   },
@@ -75,8 +75,8 @@ export const useRecipeStore = create<RecipeState>()((set, get) => ({
   removeFavorite: async id => {
     try {
       await removeFavorite(id);
-      // getFavorites();
     } catch (error) {
+      set({myFavorites: undefined});
       throw error;
     }
   },

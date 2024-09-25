@@ -34,9 +34,9 @@ export type DashboardStackParams = {
   Recipes: undefined;
   RecipesByUser: {id: string};
   SearchRecipes: undefined;
-  Recipe: {id: string; isFavorite: boolean};
+  Recipe: {id: string};
   CreateRecipe: undefined;
-  EditRecipe: {id: string; isFavorite: boolean};
+  EditRecipe: {id: string};
 
   Settings: undefined;
   UpdateImage: undefined;

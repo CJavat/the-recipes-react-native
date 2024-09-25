@@ -1,5 +1,5 @@
-import {useEffect, useState} from 'react';
-import {ActivityIndicator, FlatList, Text, View} from 'react-native';
+import {useCallback, useState} from 'react';
+import {ActivityIndicator, FlatList, View} from 'react-native';
 import tw from 'twrnc';
 
 import {DashboardLayout} from '../../layouts/DashboardLayout';
@@ -7,12 +7,10 @@ import {RecipeCard} from '../../components/RecipeCard';
 
 import {useRecipeStore} from '../../store/dashboard/RecipeStore';
 
-import {
-  CardRecipe,
-  FavoritesResponse,
-} from '../../../infrastructure/interfaces';
+import {CardRecipe} from '../../../infrastructure/interfaces';
 import {Footer} from '../../components/Footer';
 import {useThemeStore} from '../../store/theme/ThemeStore';
+import {useFocusEffect} from '@react-navigation/native';
 
 export const HomeScreen = () => {
   const {isDark} = useThemeStore();
@@ -25,16 +23,18 @@ export const HomeScreen = () => {
   const [offset, setOffset] = useState(0);
   const [limit] = useState(5);
 
-  useEffect(() => {
-    fetchData(limit, offset);
-  }, [offset]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchData(limit, offset);
+    }, [offset]),
+  );
 
   const fetchData = async (limit: number, offset: number) => {
     if (!hasMore) return;
     setLoading(true);
 
     try {
-      const favorites = await getFavorites();
+      const favoritesResponse = await getFavorites();
       const newRecipes = await getRecipes(limit, offset);
 
       const formatRecipe = newRecipes.recipes.map(recipe => ({
@@ -45,10 +45,10 @@ export const HomeScreen = () => {
         User: {
           firstName: recipe.User.firstName,
         },
-        isFavorite: favorites.some(
-          (fav: FavoritesResponse) => fav.recipeId === recipe.id,
-        ),
+        isFavorite:
+          favoritesResponse?.some(fav => fav.recipeId === recipe.id) ?? true,
       }));
+
       setData(prevData => [...prevData, ...formatRecipe]);
       const currentPage = Math.floor(offset / limit) + 1;
       if (currentPage === newRecipes.totalPages) {
@@ -79,18 +79,24 @@ export const HomeScreen = () => {
       <Footer />
     );
   };
-
   return (
     <DashboardLayout>
-      <FlatList
-        showsVerticalScrollIndicator={false}
-        data={data}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({item}) => <RecipeCard key={item.id} {...item} />}
-        onEndReached={handleLoadMoreData}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={renderFooter}
-      />
+      {loading ? (
+        <View style={tw`flex-1 justify-center`}>
+          <ActivityIndicator size={50} />
+        </View>
+      ) : (
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          data={data}
+          extraData={data} // Forzar el render cuando cambia `data`
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({item}) => <RecipeCard key={item.id} {...item} />}
+          onEndReached={handleLoadMoreData}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={renderFooter}
+        />
+      )}
     </DashboardLayout>
   );
 };

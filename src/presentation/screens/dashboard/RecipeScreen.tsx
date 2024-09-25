@@ -1,5 +1,6 @@
-import {useEffect, useState} from 'react';
+import {useCallback, useState} from 'react';
 import {
+  ScrollView,
   ActivityIndicator,
   Alert,
   FlatList,
@@ -8,34 +9,37 @@ import {
   Text,
   View,
 } from 'react-native';
-import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import {
+  RouteProp,
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import tw from 'twrnc';
 import {AxiosError} from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {StackNavigationProp} from '@react-navigation/stack';
 
 import {DashboardLayout} from '../../layouts/DashboardLayout';
+import {FavoriteButton} from '../../components/FavoriteButton';
+import {BackButton} from '../../components/BackButton';
 
 import {useRecipeStore} from '../../store/dashboard/RecipeStore';
-import {useThemeStore} from '../../store/theme/ThemeStore';
-import {formattedDate} from '../../helpers';
-
-import {DashboardStackParams} from '../../navigator/DashboardNavigator';
-import {API_URL} from '../../../config/api/recipesApi';
-import {Recipe} from '../../../infrastructure/interfaces';
-import {BackButton} from '../../components/BackButton';
 import {useAuthStore} from '../../store/auth/AuthStore';
-import {ScrollView} from 'react-native';
-import {FavoriteButton} from '../../components/FavoriteButton';
+import {useThemeStore} from '../../store/theme/ThemeStore';
+
+import {API_URL} from '../../../config/api/recipesApi';
+import {DashboardStackParams} from '../../navigator/DashboardNavigator';
+import {formattedDate} from '../../helpers';
+import {Recipe} from '../../../infrastructure/interfaces';
 
 export const RecipeScreen = () => {
   const navigation = useNavigation<StackNavigationProp<DashboardStackParams>>();
-  const {id, isFavorite} =
-    useRoute<RouteProp<DashboardStackParams, 'Recipe'>>().params;
+  const {id} = useRoute<RouteProp<DashboardStackParams, 'Recipe'>>().params;
 
   const {isDark} = useThemeStore();
   const {user} = useAuthStore();
-  const {getRecipe} = useRecipeStore();
+  const {myFavorites, getRecipe} = useRecipeStore();
 
   const [recipe, setRecipe] = useState<Recipe>();
   const [imageRecipe, setImageRecipe] = useState('');
@@ -47,9 +51,11 @@ export const RecipeScreen = () => {
     deleteRecipe: false,
   });
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, []),
+  );
 
   const fetchData = async () => {
     const backendUrl = API_URL.replace('/api', '');
@@ -65,9 +71,10 @@ export const RecipeScreen = () => {
 
       setIsMyRecipe(resp?.User?.id === user?.id);
 
-      setIsFavoriteRecipe(isFavorite);
+      setIsFavoriteRecipe(myFavorites?.some(fav => fav.id === id) ?? false);
       setRecipe(resp);
     } catch (error) {
+      console.log(error);
       if (error instanceof AxiosError) {
         Alert.alert('Error', error?.response?.data.message[0], [{text: 'Ok'}]);
         return;
@@ -111,7 +118,7 @@ export const RecipeScreen = () => {
               )}
             </View>
 
-            <View style={tw`w-full text-start`}>
+            <View style={tw`w-full`}>
               <Pressable
                 onPress={() =>
                   navigation.navigate('Category', {id: recipe!.Category.id})
@@ -133,7 +140,7 @@ export const RecipeScreen = () => {
                 </Pressable>
               </View>
 
-              <Text style={tw`text-md`}>
+              <Text>
                 Creado el{' '}
                 {recipe?.createdAt ? (
                   formattedDate(recipe!.createdAt)
@@ -157,12 +164,7 @@ export const RecipeScreen = () => {
                         editRecipe: false,
                       }))
                     }
-                    onPress={() =>
-                      navigation.navigate('EditRecipe', {
-                        id,
-                        isFavorite: isFavoriteRecipe,
-                      })
-                    }
+                    onPress={() => navigation.navigate('EditRecipe', {id})}
                     style={tw`${
                       isPressedButton.editRecipe
                         ? 'bg-sky-500'

@@ -11,10 +11,12 @@ import {DashboardStackParams} from '../navigator/DashboardNavigator';
 import {API_URL} from '../../config/api/recipesApi';
 import {CardRecipe} from '../../infrastructure/interfaces';
 import {FavoriteButton} from './FavoriteButton';
+import {useRecipeStore} from '../store/dashboard/RecipeStore';
 
 export const RecipeCard = (recipe: CardRecipe) => {
   const navigation = useNavigation<StackNavigationProp<DashboardStackParams>>();
   const {isDark} = useThemeStore();
+  const {myFavorites} = useRecipeStore();
 
   const [imageRecipe, setImageRecipe] = useState('');
 
@@ -32,12 +34,7 @@ export const RecipeCard = (recipe: CardRecipe) => {
     <View style={tw`relative w-full my-5`}>
       <Pressable
         style={tw`flex flex-row gap-4`}
-        onPress={() =>
-          navigation.navigate('Recipe', {
-            id: recipe.id,
-            isFavorite: recipe.isFavorite,
-          })
-        }>
+        onPress={() => navigation.navigate('Recipe', {id: recipe.id})}>
         {imageRecipe ? (
           <Image
             style={tw`w-20 h-20 border rounded-md`}
@@ -63,7 +60,10 @@ export const RecipeCard = (recipe: CardRecipe) => {
       </Pressable>
 
       {recipe && (
-        <FavoriteButton isFavorite={recipe.isFavorite} recipe={recipe} />
+        <FavoriteButton
+          isFavorite={myFavorites?.some(fav => fav.id === recipe.id) ?? false}
+          recipe={recipe}
+        />
       )}
     </View>
   );
