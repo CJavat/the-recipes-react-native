@@ -71,20 +71,58 @@ export const getRecipesByCategory = async (
   id: string,
   limit: number,
   offset: number | null,
-) => {
-  //TODO: TERMINAR ACCIÓN
+): Promise<RecipesResponse> => {
+  try {
+    if (offset! <= 0) offset = null;
+
+    const {data} = await recipesApi.get<RecipesResponse>(
+      `/recipes/by-category/${id}`,
+      {
+        params: {limit, offset},
+      },
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
 export const getRecipesByUser = async (
   id: string,
   limit: number,
   offset: number | null,
-) => {
-  //TODO: TERMINAR ACCIÓN
+): Promise<RecipesResponse> => {
+  try {
+    if (offset! <= 0) offset = null;
+
+    const {data} = await recipesApi.get<RecipesResponse>(
+      `/recipes/by-user/${id}`,
+      {params: {limit, offset}},
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
-export const getMyRecipes = async (limit: number, offset: number | null) => {
-  //TODO: TERMINAR ACCIÓN
+export const getMyRecipes = async (
+  limit: number,
+  offset: number | null,
+): Promise<RecipesResponse> => {
+  try {
+    if (offset! <= 0) offset = null;
+
+    const {data} = await recipesApi.get<RecipesResponse>(
+      '/recipes/own-recipes',
+      {params: {limit, offset}},
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
 export const searchRecipes = async (title: string): Promise<Recipe[]> => {
@@ -100,12 +138,30 @@ export const searchRecipes = async (title: string): Promise<Recipe[]> => {
   }
 };
 
-export const createRecipe = async (formData: FormData) => {
-  //TODO: TERMINAR ACCIÓN
+export const createRecipe = async (formData: FormData): Promise<Recipe> => {
+  try {
+    const {data} = await recipesApi.post<Recipe>('/recipes', formData);
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
-export const updateRecipe = async (recipeId: string, formData: FormData) => {
-  //TODO: TERMINAR ACCIÓN
+export const updateRecipe = async (
+  recipeId: string,
+  formData: FormData,
+): Promise<Recipe> => {
+  try {
+    const {data} = await recipesApi.patch<Recipe>(
+      `/recipes/${recipeId}`,
+      formData,
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
 export const deleteRecipe = async (

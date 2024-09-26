@@ -2,13 +2,18 @@ import {create} from 'zustand';
 
 import {
   addFavorite,
+  createRecipe,
   deleteRecipe,
   getAllCategories,
   getAllRecipes,
   getFavorites,
+  getMyRecipes,
+  getRecipesByCategory,
   getRecipesById,
+  getRecipesByUser,
   removeFavorite,
   searchRecipes,
+  updateRecipe,
 } from '../../../actions/recipes/recipes.action';
 
 import {
@@ -30,12 +35,20 @@ export interface RecipeState {
   //? Recipes
   getRecipes: (limit: number, offset: number) => Promise<RecipesResponse>;
   getRecipe: (id: string) => Promise<Recipe>;
-  //TODO: getRecipesByCategory: (id: string, limit: number, offset: number) => Promise<RecipesResponse>
-  //TODO: getRecipesByUser: (id: string, limit: number, offset: number) => Promise<RecipesResponse>
-  //TODO: getMyRecipes: (limit: number, offset: number) => Promise<RecipesResponse>
+  getRecipesByCategory: (
+    id: string,
+    limit: number,
+    offset: number,
+  ) => Promise<RecipesResponse>;
+  getRecipesByUser: (
+    id: string,
+    limit: number,
+    offset: number,
+  ) => Promise<RecipesResponse>;
+  getMyRecipes: (limit: number, offset: number) => Promise<RecipesResponse>;
   searchRecipes: (title: string) => Promise<Recipe[]>;
-  //TODO: createRecipe: (formData: FormData) => Promise<Recipe>
-  //TODO: updateRecipe: (recipeId: string, formData: FormData) => Promise<Recipe>
+  createRecipe: (formData: FormData) => Promise<Recipe>;
+  updateRecipe: (recipeId: string, formData: FormData) => Promise<Recipe>;
   deleteRecipe: (recipeId: string) => Promise<{message: string}>;
 
   //? Categories
@@ -117,9 +130,59 @@ export const useRecipeStore = create<RecipeState>()((set, get) => ({
     }
   },
 
+  getRecipesByCategory: async (id, limit, offset) => {
+    try {
+      const resp = await getRecipesByCategory(id, limit, offset);
+
+      return resp;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getRecipesByUser: async (id, limit, offset) => {
+    try {
+      const resp = await getRecipesByUser(id, limit, offset);
+
+      return resp;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getMyRecipes: async (limit, offset) => {
+    try {
+      const resp = await getMyRecipes(limit, offset);
+
+      return resp;
+    } catch (error) {
+      throw error;
+    }
+  },
+
   searchRecipes: async title => {
     try {
       const resp = await searchRecipes(title);
+
+      return resp;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  createRecipe: async formData => {
+    try {
+      const resp = await createRecipe(formData);
+
+      return resp;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  updateRecipe: async (recipeId, formData) => {
+    try {
+      const resp = await updateRecipe(recipeId, formData);
 
       return resp;
     } catch (error) {
