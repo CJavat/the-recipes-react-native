@@ -8,6 +8,7 @@ import {
   getFavorites,
   getRecipesById,
   removeFavorite,
+  searchRecipes,
 } from '../../../actions/recipes/recipes.action';
 
 import {
@@ -32,7 +33,7 @@ export interface RecipeState {
   //TODO: getRecipesByCategory: (id: string, limit: number, offset: number) => Promise<RecipesResponse>
   //TODO: getRecipesByUser: (id: string, limit: number, offset: number) => Promise<RecipesResponse>
   //TODO: getMyRecipes: (limit: number, offset: number) => Promise<RecipesResponse>
-  //TODO: searchRecipes: (title: string) => Promise<Recipe[]>
+  searchRecipes: (title: string) => Promise<Recipe[]>;
   //TODO: createRecipe: (formData: FormData) => Promise<Recipe>
   //TODO: updateRecipe: (recipeId: string, formData: FormData) => Promise<Recipe>
   deleteRecipe: (recipeId: string) => Promise<{message: string}>;
@@ -109,6 +110,16 @@ export const useRecipeStore = create<RecipeState>()((set, get) => ({
     try {
       const resp = await getRecipesById(id);
       if (!resp) throw ['No se encontró la receta'];
+
+      return resp;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  searchRecipes: async title => {
+    try {
+      const resp = await searchRecipes(title);
 
       return resp;
     } catch (error) {

@@ -32,6 +32,7 @@ import {API_URL} from '../../../config/api/recipesApi';
 import {DashboardStackParams} from '../../navigator/DashboardNavigator';
 import {formattedDate} from '../../helpers';
 import {Recipe} from '../../../infrastructure/interfaces';
+import {Footer} from '../../components/Footer';
 
 export const RecipeScreen = () => {
   const navigation = useNavigation<StackNavigationProp<DashboardStackParams>>();
@@ -82,6 +83,22 @@ export const RecipeScreen = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleDeleteRecipe = () => {
+    Alert.alert(
+      'Eliminar Receta',
+      '¿Estas seguro?, Una vez borrada la receta ya no se podrá recuperar.',
+      [
+        {
+          text: 'Borrar Receta',
+          style: 'destructive',
+          onPress: deleteMyRecipe,
+        },
+        {text: 'Cancelar', style: 'cancel'},
+      ],
+      {cancelable: false},
+    );
   };
 
   const deleteMyRecipe = async () => {
@@ -222,7 +239,7 @@ export const RecipeScreen = () => {
                         deleteRecipe: false,
                       }))
                     }
-                    onPress={deleteMyRecipe}
+                    onPress={handleDeleteRecipe}
                     style={tw`${
                       isPressedButton.deleteRecipe
                         ? 'bg-red-500'
@@ -302,6 +319,8 @@ export const RecipeScreen = () => {
             </View>
           </View>
         </View>
+
+        <Footer />
       </ScrollView>
     </DashboardLayout>
   ) : (

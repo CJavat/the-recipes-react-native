@@ -9,5 +9,6 @@ export * from './login-error-response.interface';
 export * from './card-recipe.interface';
 export * from './recipes-response.interface';
 export * from './favorites-response.interface';
+export * from './create-delete-favorite-response.interface';
 
 export * from './categories-response.interface';

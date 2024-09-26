@@ -47,7 +47,7 @@ export const RecipesScreen = () => {
           firstName: recipe.User.firstName,
         },
         isFavorite:
-          favoritesResponse?.some(fav => fav.recipeId === recipe.id) ?? true,
+          favoritesResponse?.some(fav => fav.recipeId === recipe.id) ?? false,
       }));
 
       setData(prevData => [...prevData, ...formatRecipe]);

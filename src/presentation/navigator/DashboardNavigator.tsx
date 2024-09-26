@@ -33,7 +33,7 @@ export type DashboardStackParams = {
 
   Recipes: undefined;
   RecipesByUser: {id: string};
-  SearchRecipes: undefined;
+  SearchRecipes: {title: string};
   Recipe: {id: string};
   CreateRecipe: undefined;
   EditRecipe: {id: string};

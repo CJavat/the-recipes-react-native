@@ -1,12 +1,34 @@
-import {Text, TextInput} from 'react-native';
+import {
+  TextInput,
+  type TextInputSubmitEditingEventData,
+  type NativeSyntheticEvent,
+} from 'react-native';
 import {View} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 import tw from 'twrnc';
-import {useThemeStore} from '../store/theme/ThemeStore';
 
-//TODO: TERMINAR IMPLEMENTACIÓN
+import {useThemeStore} from '../store/theme/ThemeStore';
+import {DashboardStackParams} from '../navigator/DashboardNavigator';
+import {useState} from 'react';
+
 export const Search = () => {
+  const navigation = useNavigation<StackNavigationProp<DashboardStackParams>>();
   const {isDark} = useThemeStore();
+
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSubmitEditing = async (
+    e: NativeSyntheticEvent<TextInputSubmitEditingEventData>,
+  ) => {
+    setSearchQuery(e.nativeEvent.text);
+
+    if (searchQuery) {
+      navigation.navigate('SearchRecipes', {title: searchQuery});
+      setSearchQuery('');
+    }
+  };
 
   return (
     <View style={tw`w-full flex flex-row items-center`}>
@@ -19,7 +41,9 @@ export const Search = () => {
         </View>
 
         <TextInput
-          id="simple-search"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          onSubmitEditing={handleSubmitEditing}
           style={tw`bg-transparent border border-sky-900 text-sm rounded-lg w-full pl-7 ${
             isDark ? 'text-sky-50' : 'text-sky-900'
           }`}

@@ -50,7 +50,6 @@ export const HomeScreen = () => {
           favoritesResponse?.some(fav => fav.recipeId === recipe.id) ?? true,
       }));
 
-      console.log(JSON.stringify(formatRecipe, null, 2));
       setData(prevData => [...prevData, ...formatRecipe]);
       const currentPage = Math.floor(offset / limit) + 1;
       if (currentPage === newRecipes.totalPages) {
@@ -107,5 +106,3 @@ export const HomeScreen = () => {
     </DashboardLayout>
   );
 };
-
-//TODO: Falta actualizar la lista cuando se elimina un producto.
