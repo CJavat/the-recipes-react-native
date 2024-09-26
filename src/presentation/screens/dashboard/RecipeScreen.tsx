@@ -39,12 +39,12 @@ export const RecipeScreen = () => {
 
   const {isDark} = useThemeStore();
   const {user} = useAuthStore();
-  const {myFavorites, getRecipe} = useRecipeStore();
+  const {myFavorites, getRecipe, deleteRecipe} = useRecipeStore();
 
   const [recipe, setRecipe] = useState<Recipe>();
   const [imageRecipe, setImageRecipe] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isFavoriteRecipe, setIsFavoriteRecipe] = useState(false);
+
   const [isMyRecipe, setIsMyRecipe] = useState(false);
   const [isPressedButton, setIsPressedButton] = useState({
     editRecipe: false,
@@ -70,8 +70,6 @@ export const RecipeScreen = () => {
       }
 
       setIsMyRecipe(resp?.User?.id === user?.id);
-
-      setIsFavoriteRecipe(myFavorites?.some(fav => fav.id === id) ?? false);
       setRecipe(resp);
     } catch (error) {
       console.log(error);
@@ -87,8 +85,25 @@ export const RecipeScreen = () => {
   };
 
   const deleteMyRecipe = async () => {
-    //TODO: TERMINAR ESTA FUNCIÓN
-    console.log('Deleting my recipe');
+    try {
+      const {message} = await deleteRecipe(id);
+      Alert.alert('Receta Eliminada', 'Receta eliminada correctamente', [
+        {
+          text: 'OK',
+          onPress: () => {
+            navigation.replace('Home');
+          },
+        },
+      ]);
+    } catch (error) {
+      console.log(error);
+      if (error instanceof AxiosError) {
+        Alert.alert('Error', error?.response?.data.message[0], [{text: 'Ok'}]);
+        return;
+      }
+      Alert.alert('Error', 'No se pudo obtener la receta', [{text: 'Ok'}]);
+      return;
+    }
   };
 
   return !isLoading ? (
@@ -100,7 +115,10 @@ export const RecipeScreen = () => {
           <View style={tw`flex flex-col justify-center items-center my-5`}>
             <View style={tw`relative`}>
               {recipe && (
-                <FavoriteButton isFavorite={isFavoriteRecipe} recipe={recipe} />
+                <FavoriteButton
+                  isFavorite={myFavorites?.some(fav => fav.id === id) ?? false}
+                  recipe={recipe}
+                />
               )}
 
               {imageRecipe ? (

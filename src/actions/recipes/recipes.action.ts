@@ -52,7 +52,7 @@ export const getAllRecipes = async (
   }
 };
 
-export const getRecipeById = async (recipeId: string): Promise<Recipe> => {
+export const getRecipesById = async (recipeId: string): Promise<Recipe> => {
   try {
     const {data} = await recipesApi.get(`/recipes/${recipeId}`);
 
@@ -62,11 +62,53 @@ export const getRecipeById = async (recipeId: string): Promise<Recipe> => {
   }
 };
 
-//? Categories
+export const getRecipesByCategory = async (
+  id: string,
+  limit: number,
+  offset: number,
+) => {
+  //TODO: TERMINAR ACCIÓN
+};
 
+export const getRecipesByUser = async (
+  id: string,
+  limit: number,
+  offset: number,
+) => {
+  //TODO: TERMINAR ACCIÓN
+};
+
+export const getMyRecipes = async (limit: number, offset: number) => {
+  //TODO: TERMINAR ACCIÓN
+};
+
+export const searchRecipes = async (title: string) => {
+  //TODO: TERMINAR ACCIÓN
+};
+
+export const createRecipe = async (formData: FormData) => {
+  //TODO: TERMINAR ACCIÓN
+};
+
+export const updateRecipe = async (recipeId: string, formData: FormData) => {
+  //TODO: TERMINAR ACCIÓN
+};
+
+export const deleteRecipe = async (
+  recipeId: string,
+): Promise<{message: string}> => {
+  try {
+    const {data} = await recipesApi.delete(`/recipes/${recipeId}`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+//? Categories
 export const getAllCategories = async (): Promise<CategoriesResponse[]> => {
   try {
-    const {data} = await recipesApi.get('categories');
+    const {data} = await recipesApi.get('/categories');
 
     return data;
   } catch (error) {

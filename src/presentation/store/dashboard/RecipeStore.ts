@@ -2,10 +2,11 @@ import {create} from 'zustand';
 
 import {
   addFavorite,
+  deleteRecipe,
   getAllCategories,
   getAllRecipes,
   getFavorites,
-  getRecipeById,
+  getRecipesById,
   removeFavorite,
 } from '../../../actions/recipes/recipes.action';
 
@@ -28,6 +29,13 @@ export interface RecipeState {
   //? Recipes
   getRecipes: (limit: number, offset: number) => Promise<RecipesResponse>;
   getRecipe: (id: string) => Promise<Recipe>;
+  //TODO: getRecipesByCategory: (id: string, limit: number, offset: number) => Promise<RecipesResponse>
+  //TODO: getRecipesByUser: (id: string, limit: number, offset: number) => Promise<RecipesResponse>
+  //TODO: getMyRecipes: (limit: number, offset: number) => Promise<RecipesResponse>
+  //TODO: searchRecipes: (title: string) => Promise<Recipe[]>
+  //TODO: createRecipe: (formData: FormData) => Promise<Recipe>
+  //TODO: updateRecipe: (recipeId: string, formData: FormData) => Promise<Recipe>
+  deleteRecipe: (recipeId: string) => Promise<{message: string}>;
 
   //? Categories
   getCategories: () => Promise<CategoriesResponse[]>;
@@ -99,9 +107,18 @@ export const useRecipeStore = create<RecipeState>()((set, get) => ({
 
   getRecipe: async id => {
     try {
-      const resp = await getRecipeById(id);
+      const resp = await getRecipesById(id);
       if (!resp) throw ['No se encontró la receta'];
 
+      return resp;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  deleteRecipe: async recipeId => {
+    try {
+      const resp = await deleteRecipe(recipeId);
       return resp;
     } catch (error) {
       throw error;
