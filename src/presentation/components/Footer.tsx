@@ -9,8 +9,8 @@ export const Footer = () => {
 
   return (
     <View
-      style={tw`px-5 h-20 w-full border-t ${
-        isDark ? 'border-t-sky-900 bg-sky-950' : 'border-t-sky-200 bg-sky-50'
+      style={tw`px-5 py-2 w-full border-t border-t-sky-500 ${
+        isDark ? 'bg-sky-950' : 'bg-sky-50'
       } flex items-center justify-center`}>
       <Text
         style={tw`${isDark ? 'text-white' : 'text-black'} font-bold text-xs`}>

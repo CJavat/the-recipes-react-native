@@ -69,15 +69,15 @@ export const RecipesScreen = () => {
   };
 
   const renderFooter = () => {
-    return loading ? (
-      <View style={{padding: 10}}>
-        <ActivityIndicator
-          size="large"
-          color={isDark ? '#F0F9FF' : '#082F49'}
-        />
-      </View>
-    ) : (
-      <Footer />
+    return (
+      loading && (
+        <View style={{padding: 10}}>
+          <ActivityIndicator
+            size="large"
+            color={isDark ? '#F0F9FF' : '#082F49'}
+          />
+        </View>
+      )
     );
   };
 
@@ -89,21 +89,25 @@ export const RecipesScreen = () => {
         </View>
       ) : (
         <>
-          <AddRecipeButton />
+          <View style={tw`mt-2 flex-1 justify-between`}>
+            <AddRecipeButton />
 
-          <Text style={tw`text-2xl ${isDark ? 'text-white' : 'text-black'}`}>
-            Recetas
-          </Text>
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            data={data}
-            extraData={data} // Forzar el render cuando cambia `data`
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({item}) => <RecipeCard key={item.id} {...item} />}
-            onEndReached={handleLoadMoreData}
-            onEndReachedThreshold={0.5}
-            ListFooterComponent={renderFooter}
-          />
+            <Text style={tw`text-2xl ${isDark ? 'text-white' : 'text-black'}`}>
+              Recetas
+            </Text>
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              data={data}
+              extraData={data} // Forzar el render cuando cambia `data`
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({item}) => <RecipeCard key={item.id} {...item} />}
+              onEndReached={handleLoadMoreData}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={renderFooter}
+            />
+          </View>
+
+          <Footer />
         </>
       )}
     </DashboardLayout>
