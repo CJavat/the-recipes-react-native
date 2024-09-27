@@ -2,17 +2,17 @@ import {useCallback, useState} from 'react';
 import {ActivityIndicator, Alert, FlatList, Text, View} from 'react-native';
 import {RouteProp, useFocusEffect, useRoute} from '@react-navigation/native';
 import {AxiosError} from 'axios';
+import tw from 'twrnc';
 
 import {DashboardLayout} from '../../layouts/DashboardLayout';
+import {CardRecipe} from '../../../infrastructure/interfaces';
+import {RecipeCard} from '../../components/RecipeCard';
+import {Footer} from '../../components/Footer';
 
+import {useThemeStore} from '../../store/theme/ThemeStore';
 import {useRecipeStore} from '../../store/dashboard/RecipeStore';
 
 import {DashboardStackParams} from '../../navigator/DashboardNavigator';
-import {CardRecipe, Recipe} from '../../../infrastructure/interfaces';
-import tw from 'twrnc';
-import {useThemeStore} from '../../store/theme/ThemeStore';
-import {RecipeCard} from '../../components/RecipeCard';
-import {Footer} from '../../components/Footer';
 
 export const SearchScreen = () => {
   const {title} =

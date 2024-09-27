@@ -1,12 +1,5 @@
 import {useEffect, useState} from 'react';
-import {
-  Image,
-  Pressable,
-  Text,
-  View,
-  TouchableWithoutFeedback,
-  ActivityIndicator,
-} from 'react-native';
+import {Image, Pressable, Text, View, ActivityIndicator} from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import tw from 'twrnc';
@@ -96,7 +89,7 @@ export const UserMenu = () => {
       {isExpandedProfile && (
         <View
           id="user-menu"
-          style={tw`absolute right-0 top-8 z-50 mt-2 w-48 rounded-md py-1 shadow-lg focus:outline-none
+          style={tw`absolute right-0 top-8 z-50 mt-2 w-48 rounded-md py-1 shadow-lg
           ${isDark ? 'bg-sky-950' : 'bg-sky-50'}
         `}>
           {profileRoutes.map(profile => (
@@ -106,15 +99,28 @@ export const UserMenu = () => {
               style={tw`flex-row items-center gap-5 px-4 py-2 text-sm ${
                 isDark ? 'hover:bg-sky-900' : 'hover:bg-sky-200'
               }
-          ${route.name === profile.name ? 'bg-sky-500 text-white' : ''}
+          ${route.name === profile.name ? 'bg-sky-500' : ''}
           `}
               id="user-menu-item-0">
               <Icon
                 name={profile.icon}
                 size={20}
-                style={tw`${isDark ? 'text-white' : 'text-black'}`}
+                style={tw`${
+                  route.name === profile.name
+                    ? 'text-white'
+                    : isDark
+                    ? 'text-white'
+                    : 'text-black'
+                }`}
               />
-              <Text style={tw`${isDark ? 'text-white' : 'text-black'}`}>
+              <Text
+                style={tw`${
+                  route.name === profile.name
+                    ? 'text-white'
+                    : isDark
+                    ? 'text-white'
+                    : 'text-black'
+                }`}>
                 {profile.label}
               </Text>
             </Pressable>

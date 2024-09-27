@@ -25,7 +25,7 @@ export type DashboardStackParams = {
   Category: {id: string};
 
   MyAccount: undefined;
-  EditAccount: undefined;
+  EditAccount: {id: string};
   DeleteAccount: undefined;
 
   MyFavorites: undefined;

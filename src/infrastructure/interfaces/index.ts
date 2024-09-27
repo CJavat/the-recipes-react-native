@@ -12,3 +12,7 @@ export * from './favorites-response.interface';
 export * from './create-delete-favorite-response.interface';
 
 export * from './categories-response.interface';
+
+export * from './find-user-response.interface';
+export * from './user.interface';
+export * from './update-user.interface';
