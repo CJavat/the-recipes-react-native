@@ -30,6 +30,7 @@ export interface AuthState {
   reactivateAccount: (email: string) => Promise<ReactivateAccountResponse>;
   checkStatus: () => Promise<User>;
   logout: () => Promise<void>;
+  updateUser: (user: User) => void;
 }
 
 export const useAuthStore = create<AuthState>()((set, get) => ({
@@ -100,5 +101,9 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
     } catch (error) {
       throw new Error('Error removing token');
     }
+  },
+
+  updateUser: user => {
+    set({user: user});
   },
 }));

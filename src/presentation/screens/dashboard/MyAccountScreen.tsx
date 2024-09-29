@@ -129,7 +129,7 @@ export const MyAccountScreen = () => {
               </View>
 
               <View
-                style={tw`px-4 py-6 border-t ${
+                style={tw`px-4 py-2 border-t ${
                   isDark ? 'border-t-sky-900' : 'border-t-sky-300'
                 }`}>
                 <Text
@@ -138,16 +138,13 @@ export const MyAccountScreen = () => {
                   }  `}>
                   Nombre
                 </Text>
-                <Text
-                  style={tw`mt-1 text-lg ${
-                    isDark ? 'text-sky-300' : 'text-sky-950'
-                  }`}>
+                <Text style={tw`my-1 text-sm text-sky-500`}>
                   {user?.firstName ?? 'Sin Nombre'}
                 </Text>
               </View>
 
               <View
-                style={tw`px-4 py-6 border-t ${
+                style={tw`px-4 py-2 border-t ${
                   isDark ? 'border-t-sky-900' : 'border-t-sky-300'
                 }`}>
                 <Text
@@ -156,16 +153,13 @@ export const MyAccountScreen = () => {
                   }  `}>
                   Apellido
                 </Text>
-                <Text
-                  style={tw`mt-1 text-lg ${
-                    isDark ? 'text-sky-300' : 'text-sky-950'
-                  }`}>
+                <Text style={tw`my-1 text-sm text-sky-500`}>
                   {user?.lastName ?? 'Sin Apellido'}
                 </Text>
               </View>
 
               <View
-                style={tw`px-4 py-6 border-t ${
+                style={tw`px-4 py-2 border-t ${
                   isDark ? 'border-t-sky-900' : 'border-t-sky-300'
                 }`}>
                 <Text
@@ -174,10 +168,7 @@ export const MyAccountScreen = () => {
                   }  `}>
                   Email
                 </Text>
-                <Text
-                  style={tw`mt-1 text-lg ${
-                    isDark ? 'text-sky-300' : 'text-sky-950'
-                  }`}>
+                <Text style={tw`my-1 text-sm text-sky-500`}>
                   {user?.email ?? 'Sin Email'}
                 </Text>
               </View>
@@ -200,24 +191,14 @@ export const MyAccountScreen = () => {
                     }))
                   }
                   onPress={handleEditAccount}>
-                  <Icon
-                    name="create-outline"
-                    size={20}
-                    style={tw`${isDark ? 'text-sky-50' : 'text-sky-950'}`}
-                  />
+                  <Icon name="create-outline" size={20} color="#FFF" />
                   <Text
-                    style={tw`text-sm font-semibold text-center uppercase ${
-                      isDark ? 'text-white' : 'text-black'
-                    }`}>
+                    style={tw`text-sm font-semibold text-center uppercase text-white`}>
                     Editar Perfil
                   </Text>
                 </Pressable>
               </View>
             </View>
-          </View>
-
-          <View style={tw`mt-5`}>
-            <Footer />
           </View>
         </ScrollView>
       )}

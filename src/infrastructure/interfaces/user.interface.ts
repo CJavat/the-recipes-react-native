@@ -5,6 +5,9 @@ export interface User {
   email: string;
   avatar: string;
   isActive: boolean;
+  role: string;
+  activationToken: string;
   createdAt: Date;
   updatedAt: Date | null;
+  token: string;
 }
