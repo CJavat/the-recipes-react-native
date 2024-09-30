@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Image,
   Pressable,
   Text,
   TextInput,
@@ -10,19 +9,20 @@ import {
 } from 'react-native';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
+import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import tw from 'twrnc';
+import {AxiosError} from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import {DashboardLayout} from '../../layouts/DashboardLayout';
 import {Footer} from '../../components/Footer';
+import {BackButton} from '../../components/BackButton';
 
 import {useThemeStore} from '../../store/theme/ThemeStore';
 import {useAuthStore} from '../../store/auth/AuthStore';
 import {useUserStore} from '../../store/dashboard/UserStore';
 
 import {DashboardStackParams} from '../../navigator/DashboardNavigator';
-import {Controller, SubmitHandler, useForm} from 'react-hook-form';
-import {AxiosError} from 'axios';
 
 interface FormInput {
   firstName: string;
@@ -58,25 +58,24 @@ export const EditAccountScreen = () => {
 
     try {
       const resp = await updateProfile(id, data);
-      console.log(JSON.stringify(resp, null, 3));
 
       updateUser(resp);
       Alert.alert(
         'Datos Actualizados',
         'Se actualizaron tus datos correctamente',
-        [{text: 'Ok', onPress: () => navigation.replace('Home')}],
+        [{text: 'Ok', onPress: () => navigation.replace('MyAccount')}],
       );
       return;
     } catch (error) {
       if (error instanceof AxiosError) {
         Alert.alert('Error', error?.response?.data.message[0], [
-          {text: 'Ok', onPress: () => navigation.replace('Settings')},
+          {text: 'Ok', onPress: () => navigation.replace('MyAccount')},
         ]);
         return;
       }
       console.log(error);
       Alert.alert('Error', 'No se pudo eliminar tu cuenta', [
-        {text: 'Ok', onPress: () => navigation.replace('Settings')},
+        {text: 'Ok', onPress: () => navigation.replace('MyAccount')},
       ]);
       return;
     } finally {
@@ -86,6 +85,8 @@ export const EditAccountScreen = () => {
 
   return (
     <DashboardLayout>
+      <BackButton />
+
       <View style={tw`my-2 flex-1 justify-between`}>
         <View>
           <View>

@@ -25,6 +25,7 @@ import {
 } from '../../../infrastructure/interfaces';
 
 export interface RecipeState {
+  categories?: CategoriesResponse[];
   myFavorites?: CardRecipe[];
 
   //? Favorites
@@ -56,6 +57,7 @@ export interface RecipeState {
 }
 
 export const useRecipeStore = create<RecipeState>()((set, get) => ({
+  categories: undefined,
   myFavorites: undefined,
 
   //? Favorites
@@ -204,6 +206,8 @@ export const useRecipeStore = create<RecipeState>()((set, get) => ({
     try {
       const resp = await getAllCategories();
       if (!resp) throw ['No hay categorias por mostrar'];
+
+      set({categories: resp});
 
       return resp;
     } catch (error) {

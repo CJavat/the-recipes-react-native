@@ -1,3 +1,4 @@
+import {AxiosError} from 'axios';
 import {recipesApi} from '../../config/api/recipesApi';
 import {
   FindUserResponse,
@@ -33,14 +34,24 @@ export const updateUserProfile = async (
 };
 
 export const updatePhoto = async (formData: FormData): Promise<User> => {
+  console.log(JSON.stringify(formData, null, 2));
   try {
     const {data} = await recipesApi.patch<User>(
       '/users/change-image',
       formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        transformRequest: formData => formData,
+      },
     );
 
     return data;
   } catch (error) {
+    if (error instanceof AxiosError) {
+      console.log(JSON.stringify(error, null, 3));
+    }
     console.log(error);
     throw error;
   }

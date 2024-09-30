@@ -1,52 +1,143 @@
-import {Button, Image, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  Alert,
+  Image,
+  Text,
+  View,
+  Pressable,
+  ActivityIndicator,
+  Platform,
+} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 import ImagePicker, {ImageOrVideo} from 'react-native-image-crop-picker';
+import tw from 'twrnc';
+import {AxiosError} from 'axios';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import {DashboardLayout} from '../../layouts/DashboardLayout';
-import {useState} from 'react';
+import {BackButton} from '../../components/BackButton';
 
-//TODO: TERMINAR SCREEN
+import {useAuthStore} from '../../store/auth/AuthStore';
+import {useThemeStore} from '../../store/theme/ThemeStore';
+import {useUserStore} from '../../store/dashboard/UserStore';
+
+import {DashboardStackParams} from '../../navigator/DashboardNavigator';
+
 export const UpdateImageScreen = () => {
-  const [image, setImage] = useState(''); //! Borrar al terminar componente
+  const navigation = useNavigation<StackNavigationProp<DashboardStackParams>>();
+  const {isDark} = useThemeStore();
+  const {updatePhoto} = useUserStore();
+  const {user, updateUser} = useAuthStore();
+
+  const [isPosting, setIsPosting] = useState(false);
+  const [isPressedButton, setIsPressedButton] = useState(false);
+
+  useEffect(() => {
+    if (!user?.avatar) return navigation.replace('MyAccount');
+  }, []);
 
   const pickImage = () => {
     ImagePicker.openPicker({
       width: 700,
       height: 700,
       cropping: true, // Permite el recorte
+      mediaType: 'photo',
     }).then((image: ImageOrVideo) => {
-      //TODO: Convertir el archivo en FILE y después enviarlo como FormData al updatePhoto de user.action
-      setImage(image.path); //! Borrar al terminar componente
+      const formData = new FormData();
+      formData.append('file', {
+        uri: image.path.startsWith('file://')
+          ? image.path
+          : `file://${image.path}`,
+        type: image.mime || 'image/jpeg', // tipo de la imagen, usa image.mime si está disponible
+        name: image.filename || 'image.jpg', // nombre del archivo, usa image.filename si está disponible
+      });
 
-      const file = createFile(image);
-      console.log('Archivo convertido:', file);
+      handleUpdatePhoto(formData);
     });
   };
 
-  const createFile = (image: ImageOrVideo) => {
-    const {path, mime} = image; // Obtener la ruta y tipo MIME
-    const filename = path.split('/').pop(); // Obtener el nombre del archivo
+  const handleUpdatePhoto = async (image: FormData) => {
+    setIsPosting(true);
 
-    const file = {
-      uri: path, // URI local de la imagen
-      type: mime, // Tipo de archivo (MIME)
-      name: filename, // Nombre del archivo
-    };
+    try {
+      const resp = await updatePhoto(image);
+      console.log(JSON.stringify(resp, null, 3));
+      updateUser(resp);
 
-    return file;
+      Alert.alert(
+        'Imagen Actualizada',
+        'Tu foto de perfil se ha actualizado correctamente',
+        [{text: 'Ok', onPress: () => navigation.replace('MyAccount')}],
+      );
+      return;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error.response);
+        Alert.alert('Error', error?.response?.data.message, [
+          {text: 'Ok', onPress: () => navigation.replace('MyAccount')},
+        ]);
+        return;
+      }
+      console.log(error);
+      Alert.alert('Error Desconocido', 'No se pudo actualizar tu foto', [
+        {text: 'Ok', onPress: () => navigation.replace('MyAccount')},
+      ]);
+      return;
+    } finally {
+      setIsPosting(false);
+    }
   };
 
   return (
     <DashboardLayout>
-      <Text>UpdateImageScreen</Text>
+      <BackButton />
 
-      <Button title="Seleccionar Imagen" onPress={pickImage} />
+      <View style={tw`my-2`}>
+        <View
+          style={tw`border-b ${
+            isDark ? 'border-b-sky-900' : 'border-b-sky-300'
+          }`}>
+          <Text
+            style={tw`mb-2 text-2xl ${isDark ? 'text-white' : 'text-black'}`}>
+            Actualizar Foto
+          </Text>
+        </View>
 
-      {
-        //! Borrar al terminar componente
-        image && (
-          <Image source={{uri: image}} style={{width: 300, height: 400}} />
-        )
-      }
+        <View
+          style={tw`mt-6 w-full container mx-auto flex flex-col justify-center items-center gap-5`}>
+          <Image
+            alt={`${user?.firstName} ${user?.lastName}`}
+            src={user?.avatar}
+            style={tw`w-full rounded-full h-36 w-36 border border-sky-500`}
+          />
+
+          <Pressable
+            style={tw`w-full justify-center rounded-md px-3 py-1.5 flex-row justify-center items-center gap-3 ${
+              isPressedButton ? 'bg-sky-500' : 'bg-sky-600'
+            }`}
+            onPressIn={() => setIsPressedButton(true)}
+            onPressOut={() => setIsPressedButton(false)}
+            onPress={pickImage}
+            disabled={isPosting}>
+            {!isPosting ? (
+              <>
+                <Icon name="camera-outline" size={20} color="#FFF" />
+                <Text
+                  style={tw`text-sm font-semibold text-center uppercase text-white`}>
+                  Seleccionar Imagen
+                </Text>
+              </>
+            ) : (
+              <ActivityIndicator
+                color={'#FFF'}
+                size={20}
+                animating={isPosting}
+              />
+            )}
+          </Pressable>
+        </View>
+      </View>
     </DashboardLayout>
   );
 };
