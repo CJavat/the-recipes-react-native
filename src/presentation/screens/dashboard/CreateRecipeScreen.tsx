@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Image,
   Pressable,
   ScrollView,
   Text,
@@ -17,6 +18,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {Picker} from '@react-native-picker/picker';
+import ImagePicker, {ImageOrVideo} from 'react-native-image-crop-picker';
 import {AxiosError} from 'axios';
 import tw from 'twrnc';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -28,6 +30,7 @@ import {useThemeStore} from '../../store/theme/ThemeStore';
 import {useRecipeStore} from '../../store/dashboard/RecipeStore';
 
 import {DashboardStackParams} from '../../navigator/DashboardNavigator';
+import {useAuthStore} from '../../store/auth/AuthStore';
 
 interface FormInput {
   title: string;
@@ -40,6 +43,7 @@ interface FormInput {
 export const CreateRecipeScreen = () => {
   const navigation = useNavigation<StackNavigationProp<DashboardStackParams>>();
   const {isDark} = useThemeStore();
+  const {user} = useAuthStore();
   const {categories, getCategories, createRecipe} = useRecipeStore();
   const {
     control,
@@ -56,9 +60,11 @@ export const CreateRecipeScreen = () => {
   });
 
   const [isPosting, setIsPosting] = useState(false);
+  const [imageSelected, setImageSelected] = useState<ImageOrVideo | null>(null);
   const [isPressedButton, setIsPressedButton] = useState({
     addIngredientButton: false,
     addStepButton: false,
+    updatePhotoButton: false,
     createRecipeButton: false,
   });
 
@@ -71,24 +77,62 @@ export const CreateRecipeScreen = () => {
     ingredientAppend('');
   }, []);
 
+  const pickImage = () => {
+    ImagePicker.openPicker({
+      width: 700,
+      height: 700,
+      cropping: true, // Permite el recorte
+      mediaType: 'photo',
+    }).then((image: ImageOrVideo) => {
+      setImageSelected(image);
+    });
+  };
+
   const onSubmit: SubmitHandler<FormInput> = async data => {
+    const {title, description, ingredients, steps, category} = data;
     setIsPosting(true);
 
-    //TODO: Aquí comporbar si existe una imagen cargada
-
     try {
-      //TODO: Mandar a llamar la petición al backend.
+      const formData = new FormData();
+
+      if (imageSelected) {
+        formData.append('file', {
+          uri: imageSelected.path.startsWith('file://')
+            ? imageSelected.path
+            : `file://${imageSelected.path}`,
+          type: imageSelected.mime || 'imageSelected/jpeg',
+          name: imageSelected.filename || 'image.jpg',
+        });
+      }
+
+      formData.append('title', title);
+      formData.append('description', description);
+      formData.append('categoryId', category);
+
+      ingredients.forEach(ingredient => {
+        formData.append('ingredients[]', ingredient);
+      });
+      steps.forEach(step => {
+        formData.append('steps[]', step);
+      });
+
+      const resp = await createRecipe(formData);
+
+      Alert.alert('Receta Creada', 'Tu receta se ha creado exitosamente', [
+        {text: 'Ok', onPress: () => navigation.replace('Home')},
+      ]);
+      return;
     } catch (error) {
       if (error instanceof AxiosError) {
-        console.log(error.response);
+        console.log(error.response?.data);
         Alert.alert('Error', error?.response?.data.message, [
-          {text: 'Ok', onPress: () => navigation.replace('MyAccount')},
+          {text: 'Ok', onPress: () => navigation.replace('Home')},
         ]);
         return;
       }
       console.log(error);
-      Alert.alert('Error Desconocido', 'No se pudo actualizar tu foto', [
-        {text: 'Ok', onPress: () => navigation.replace('MyAccount')},
+      Alert.alert('Error Desconocido', 'No se pudo crear tu receta', [
+        {text: 'Ok', onPress: () => navigation.replace('Home')},
       ]);
       return;
     } finally {
@@ -109,10 +153,53 @@ export const CreateRecipeScreen = () => {
             isDark ? 'border-t-sky-900' : 'border-t-sky-300'
           }`}>
           <View style={tw`mt-5 mx-auto w-full max-w-sm`}>
-            <View style={tw`gap-6`}>
-              {/*
-                //TODO: Poner la función de cargar la imagen y agregarla al useState.
-              */}
+            <View style={tw`gap-3`}>
+              {/* Imagen */}
+              <View
+                style={tw`mt-6 w-full mx-auto flex flex-col justify-center items-center gap-5`}>
+                {imageSelected ? (
+                  <Image
+                    alt={`${user?.firstName} ${user?.lastName}`}
+                    src={imageSelected.path}
+                    style={tw`w-full rounded-full h-36 w-36 border border-sky-500`}
+                  />
+                ) : (
+                  <View
+                    style={tw`justify-center items-center px-5 w-full rounded-full h-36 w-36 border border-sky-500`}>
+                    <Text style={tw`text-lg text-center text-sky-500`}>
+                      Selecciona Una Imagen
+                    </Text>
+                  </View>
+                )}
+
+                <Pressable
+                  style={tw`w-full justify-center rounded-md px-3 py-1.5 flex-row justify-center items-center gap-3 ${
+                    isPressedButton.updatePhotoButton
+                      ? 'bg-sky-500'
+                      : 'bg-sky-600'
+                  }`}
+                  onPressIn={() =>
+                    setIsPressedButton(prevState => ({
+                      ...prevState,
+                      updatePhotoButton: true,
+                    }))
+                  }
+                  onPressOut={() =>
+                    setIsPressedButton(prevState => ({
+                      ...prevState,
+                      updatePhotoButton: false,
+                    }))
+                  }
+                  onPress={pickImage}
+                  disabled={isPosting}>
+                  <Icon name="camera-outline" size={20} color="#FFF" />
+                  <Text
+                    style={tw`text-sm font-semibold text-center uppercase text-white`}>
+                    Seleccionar Imagen
+                  </Text>
+                </Pressable>
+              </View>
+
               {/* Título */}
               <View>
                 <Text

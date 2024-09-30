@@ -140,7 +140,12 @@ export const searchRecipes = async (title: string): Promise<Recipe[]> => {
 
 export const createRecipe = async (formData: FormData): Promise<Recipe> => {
   try {
-    const {data} = await recipesApi.post<Recipe>('/recipes', formData);
+    const {data} = await recipesApi.post<Recipe>('/recipes', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      transformRequest: formData => formData,
+    });
     return data;
   } catch (error) {
     console.log(error);
@@ -156,6 +161,12 @@ export const updateRecipe = async (
     const {data} = await recipesApi.patch<Recipe>(
       `/recipes/${recipeId}`,
       formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        transformRequest: formData => formData,
+      },
     );
     return data;
   } catch (error) {

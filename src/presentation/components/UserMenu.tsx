@@ -54,7 +54,7 @@ export const UserMenu = () => {
     if (user?.avatar?.startsWith('http')) {
       setUserImageProfile(user.avatar);
     } else {
-      setUserImageProfile(`${backendUrl}/no-user-image.jpg`);
+      setUserImageProfile(`${backendUrl}/${user?.avatar}`);
     }
   }, []);
 

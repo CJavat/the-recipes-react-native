@@ -6,7 +6,6 @@ import {
   View,
   Pressable,
   ActivityIndicator,
-  Platform,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
@@ -22,6 +21,7 @@ import {useAuthStore} from '../../store/auth/AuthStore';
 import {useThemeStore} from '../../store/theme/ThemeStore';
 import {useUserStore} from '../../store/dashboard/UserStore';
 
+import {API_URL} from '../../../config/api/recipesApi';
 import {DashboardStackParams} from '../../navigator/DashboardNavigator';
 
 export const UpdateImageScreen = () => {
@@ -29,12 +29,22 @@ export const UpdateImageScreen = () => {
   const {isDark} = useThemeStore();
   const {updatePhoto} = useUserStore();
   const {user, updateUser} = useAuthStore();
+  const [userImage, setUserImage] = useState('');
 
   const [isPosting, setIsPosting] = useState(false);
   const [isPressedButton, setIsPressedButton] = useState(false);
 
   useEffect(() => {
     if (!user?.avatar) return navigation.replace('MyAccount');
+
+    const backendUrl = API_URL.replace('/api', '');
+
+    if (user.avatar.startsWith('http')) {
+      setUserImage(user.avatar);
+    } else {
+      console.log(`${backendUrl}/${user.avatar}`);
+      setUserImage(`${backendUrl}/${user.avatar}`);
+    }
   }, []);
 
   const pickImage = () => {
@@ -52,7 +62,6 @@ export const UpdateImageScreen = () => {
         type: image.mime || 'image/jpeg', // tipo de la imagen, usa image.mime si está disponible
         name: image.filename || 'image.jpg', // nombre del archivo, usa image.filename si está disponible
       });
-
       handleUpdatePhoto(formData);
     });
   };
@@ -62,7 +71,6 @@ export const UpdateImageScreen = () => {
 
     try {
       const resp = await updatePhoto(image);
-      console.log(JSON.stringify(resp, null, 3));
       updateUser(resp);
 
       Alert.alert(
@@ -105,12 +113,19 @@ export const UpdateImageScreen = () => {
         </View>
 
         <View
-          style={tw`mt-6 w-full container mx-auto flex flex-col justify-center items-center gap-5`}>
-          <Image
-            alt={`${user?.firstName} ${user?.lastName}`}
-            src={user?.avatar}
-            style={tw`w-full rounded-full h-36 w-36 border border-sky-500`}
-          />
+          style={tw`mt-6 w-full mx-auto flex flex-col justify-center items-center gap-5`}>
+          {userImage ? (
+            <Image
+              alt={`${user?.firstName} ${user?.lastName}`}
+              src={userImage}
+              style={tw`w-full rounded-full h-36 w-36 border border-sky-500`}
+            />
+          ) : (
+            <ActivityIndicator
+              size={60}
+              color={isDark ? '#F0F9FF' : '#082F49'}
+            />
+          )}
 
           <Pressable
             style={tw`w-full justify-center rounded-md px-3 py-1.5 flex-row justify-center items-center gap-3 ${
