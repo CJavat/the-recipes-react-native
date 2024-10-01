@@ -1,4 +1,4 @@
-import {useNavigation} from '@react-navigation/native';
+import React, {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {PropsWithChildren, useEffect} from 'react';
 import {useAuthStore} from '../store/auth/AuthStore';

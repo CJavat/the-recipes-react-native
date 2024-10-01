@@ -34,7 +34,6 @@ export const updateUserProfile = async (
 };
 
 export const updatePhoto = async (formData: FormData): Promise<User> => {
-  console.log(JSON.stringify(formData, null, 2));
   try {
     const {data} = await recipesApi.patch<User>(
       '/users/change-image',

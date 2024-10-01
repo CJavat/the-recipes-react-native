@@ -123,9 +123,13 @@ export const EditRecipeScreen = () => {
       height: 700,
       cropping: true, // Permite el recorte
       mediaType: 'photo',
-    }).then((image: ImageOrVideo) => {
-      setImageSelected(image);
-    });
+    })
+      .then((image: ImageOrVideo) => {
+        setImageSelected(image);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   const onSubmit: SubmitHandler<FormInput> = async data => {
@@ -159,7 +163,10 @@ export const EditRecipeScreen = () => {
       const resp = await updateRecipe(id, formData);
 
       Alert.alert('Receta Actualizada', 'Tu receta se actualizó exitosamente', [
-        {text: 'Ok', onPress: () => navigation.replace('Home')},
+        {
+          text: 'Ok',
+          onPress: () => navigation.reset({index: 0, routes: [{name: 'Home'}]}),
+        },
       ]);
       return;
     } catch (error) {
@@ -207,7 +214,9 @@ export const EditRecipeScreen = () => {
                     {recipeImage ? (
                       <Image
                         alt={`${user?.firstName} ${user?.lastName}`}
-                        source={{uri: recipeImage}}
+                        source={{
+                          uri: imageSelected ? imageSelected.path : recipeImage,
+                        }}
                         style={tw`w-full rounded-full h-36 w-36 border border-sky-500`}
                       />
                     ) : (

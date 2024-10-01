@@ -55,7 +55,7 @@ export const UserMenu = () => {
 
     let imageUrl = '';
     if (user?.avatar?.startsWith('http')) {
-      imageUrl = user.avatar;
+      imageUrl = `${user.avatar}?invalidate=true`;
     } else {
       imageUrl = `${backendUrl}/${user?.avatar}`;
     }
@@ -81,11 +81,13 @@ export const UserMenu = () => {
         style={tw`h-10 w-10 relative flex rounded-full text-sm ${
           isLoading ? 'border border-sky-500' : ''
         }`}>
-        {userImageProfile ? (
+        {!isLoading && userImageProfile ? (
           <Image
             style={tw`h-10 w-10 rounded-full border border-sky-500`}
             source={{uri: userImageProfile}}
             alt="User Image"
+            onLoad={() => setIsLoading(false)}
+            onError={() => console.log('Error al cargar la imagen.')}
           />
         ) : (
           <ActivityIndicator

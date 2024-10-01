@@ -49,7 +49,7 @@ export const CategoriesScreen = () => {
       </Text>
 
       <View
-        style={tw`text-xs gap-3 flex-row flex-wrap justify-between items-center`}>
+        style={tw`mt-5 text-xs gap-3 flex-row flex-wrap justify-between items-center`}>
         {categories?.map(category => (
           <Pressable
             key={category.id}

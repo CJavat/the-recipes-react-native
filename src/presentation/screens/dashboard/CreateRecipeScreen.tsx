@@ -83,9 +83,13 @@ export const CreateRecipeScreen = () => {
       height: 700,
       cropping: true, // Permite el recorte
       mediaType: 'photo',
-    }).then((image: ImageOrVideo) => {
-      setImageSelected(image);
-    });
+    })
+      .then((image: ImageOrVideo) => {
+        setImageSelected(image);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   const onSubmit: SubmitHandler<FormInput> = async data => {
@@ -119,7 +123,10 @@ export const CreateRecipeScreen = () => {
       const resp = await createRecipe(formData);
 
       Alert.alert('Receta Creada', 'Tu receta se ha creado exitosamente', [
-        {text: 'Ok', onPress: () => navigation.replace('Home')},
+        {
+          text: 'Ok',
+          onPress: () => navigation.reset({index: 0, routes: [{name: 'Home'}]}),
+        },
       ]);
       return;
     } catch (error) {

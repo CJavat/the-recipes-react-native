@@ -47,7 +47,7 @@ export const UpdateImageScreen = () => {
     }
 
     setUserImage(`${imageUrl}?${new Date().getTime()}`);
-  }, []);
+  }, [user?.avatar]);
 
   const pickImage = () => {
     ImagePicker.openPicker({
@@ -55,17 +55,21 @@ export const UpdateImageScreen = () => {
       height: 700,
       cropping: true, // Permite el recorte
       mediaType: 'photo',
-    }).then((image: ImageOrVideo) => {
-      const formData = new FormData();
-      formData.append('file', {
-        uri: image.path.startsWith('file://')
-          ? image.path
-          : `file://${image.path}`,
-        type: image.mime || 'image/jpeg', // tipo de la imagen, usa image.mime si está disponible
-        name: image.filename || 'image.jpg', // nombre del archivo, usa image.filename si está disponible
+    })
+      .then((image: ImageOrVideo) => {
+        const formData = new FormData();
+        formData.append('file', {
+          uri: image.path.startsWith('file://')
+            ? image.path
+            : `file://${image.path}`,
+          type: image.mime || 'image/jpeg', // tipo de la imagen, usa image.mime si está disponible
+          name: image.filename || 'image.jpg', // nombre del archivo, usa image.filename si está disponible
+        });
+        handleUpdatePhoto(formData);
+      })
+      .catch(err => {
+        console.log(err);
       });
-      handleUpdatePhoto(formData);
-    });
   };
 
   const handleUpdatePhoto = async (image: FormData) => {
@@ -73,12 +77,18 @@ export const UpdateImageScreen = () => {
 
     try {
       const resp = await updatePhoto(image);
-      updateUser(resp);
+      updateUser(resp); //TODO: Hacer que primero el updateUser sea undefined y luego actualizarle la foto correcta.
 
       Alert.alert(
         'Imagen Actualizada',
         'Tu foto de perfil se ha actualizado correctamente',
-        [{text: 'Ok', onPress: () => navigation.replace('MyAccount')}],
+        [
+          {
+            text: 'Ok',
+            onPress: () =>
+              navigation.reset({index: 0, routes: [{name: 'Home'}]}),
+          },
+        ],
       );
       return;
     } catch (error) {

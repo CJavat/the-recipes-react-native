@@ -1,4 +1,4 @@
-import {useCallback, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {ActivityIndicator, FlatList, Text, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import tw from 'twrnc';
@@ -19,6 +19,7 @@ export const RecipesScreen = () => {
 
   const [data, setData] = useState<CardRecipe[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isRefreshing, setisRefreshing] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
   const [offset, setOffset] = useState(0);
@@ -31,7 +32,7 @@ export const RecipesScreen = () => {
   );
 
   const fetchData = async (limit: number, offset: number) => {
-    if (!hasMore) return;
+    if (!hasMore && offset !== 0) return;
     setLoading(true);
 
     try {
@@ -87,6 +88,20 @@ export const RecipesScreen = () => {
     );
   };
 
+  const onRefresh = async () => {
+    setisRefreshing(true);
+    setOffset(0);
+    setData([]);
+
+    try {
+      await fetchData(limit, 0);
+    } catch (error) {
+      console.log('Error al refrescar la data', error);
+    } finally {
+      setisRefreshing(false);
+    }
+  };
+
   return (
     <DashboardLayout>
       {loading ? (
@@ -102,6 +117,8 @@ export const RecipesScreen = () => {
               Recetas
             </Text>
             <FlatList
+              refreshing={isRefreshing}
+              onRefresh={onRefresh}
               showsVerticalScrollIndicator={false}
               data={data}
               extraData={data} // Forzar el render cuando cambia `data`
