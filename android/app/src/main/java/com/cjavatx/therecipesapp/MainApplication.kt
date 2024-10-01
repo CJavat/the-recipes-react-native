@@ -1,4 +1,4 @@
-package com.therecipesapp
+package com.cjavatx.therecipesapp
 
 import android.app.Application
 import com.facebook.react.PackageList

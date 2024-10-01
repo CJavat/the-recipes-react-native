@@ -1,4 +1,4 @@
-package com.therecipesapp
+package com.cjavatx.therecipesapp
 
 import android.os.Bundle;
 
