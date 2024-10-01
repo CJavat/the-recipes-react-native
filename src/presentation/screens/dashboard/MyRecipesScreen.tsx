@@ -45,7 +45,13 @@ export const MyRecipesScreen = () => {
         isFavorite: myFavorites?.some(fav => fav.id === recipe.id) ?? true,
       }));
 
-      setData(prevData => [...prevData, ...formatRecipe]);
+      setData(prevData => {
+        const uniqueData = formatRecipe.filter(
+          item => !prevData.some(existingItem => existingItem.id === item.id),
+        );
+        return [...prevData, ...uniqueData];
+      });
+
       const currentPage = Math.floor(offset / limit) + 1;
       if (currentPage === resp.totalPages) {
         setHasMore(false);

@@ -39,12 +39,14 @@ export const UpdateImageScreen = () => {
 
     const backendUrl = API_URL.replace('/api', '');
 
+    let imageUrl = '';
     if (user.avatar.startsWith('http')) {
-      setUserImage(user.avatar);
+      imageUrl = user.avatar;
     } else {
-      console.log(`${backendUrl}/${user.avatar}`);
-      setUserImage(`${backendUrl}/${user.avatar}`);
+      imageUrl = `${backendUrl}/${user.avatar}`;
     }
+
+    setUserImage(`${imageUrl}?${new Date().getTime()}`);
   }, []);
 
   const pickImage = () => {
@@ -117,7 +119,7 @@ export const UpdateImageScreen = () => {
           {userImage ? (
             <Image
               alt={`${user?.firstName} ${user?.lastName}`}
-              src={userImage}
+              source={{uri: userImage}}
               style={tw`w-full rounded-full h-36 w-36 border border-sky-500`}
             />
           ) : (

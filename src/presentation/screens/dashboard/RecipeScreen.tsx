@@ -64,11 +64,13 @@ export const RecipeScreen = () => {
     try {
       const resp = await getRecipe(id);
 
+      let imageUrl = '';
       if (resp.image.startsWith('http')) {
-        setImageRecipe(resp.image);
+        imageUrl = resp.image;
       } else {
-        setImageRecipe(`${backendUrl}/${resp.image}`);
+        imageUrl = `${backendUrl}/${resp.image}`;
       }
+      setImageRecipe(`${imageUrl}?${new Date().getTime()}`);
 
       setIsMyRecipe(resp?.User?.id === user?.id);
       setRecipe(resp);
@@ -140,7 +142,7 @@ export const RecipeScreen = () => {
 
               {imageRecipe ? (
                 <Image
-                  src={imageRecipe}
+                  source={{uri: imageRecipe}}
                   alt={recipe?.title}
                   style={tw`w-52 h-52 mb-5 rounded-lg border-4 ${
                     isDark ? 'border-sky-900' : 'border-sky-200'

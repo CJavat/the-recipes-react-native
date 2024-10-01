@@ -14,6 +14,7 @@ import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import tw from 'twrnc';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {StackNavigationProp} from '@react-navigation/stack';
+import {AxiosError} from 'axios';
 
 import {RootStackParams} from '../../navigator/RootNavigator';
 
@@ -70,9 +71,18 @@ export const LoginScreen = () => {
       await login(email, password);
       return navigation.replace('Drawer');
     } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error.response);
+        Alert.alert('Error', error?.response?.data.message, [{text: 'Ok'}]);
+        return;
+      }
       console.log(error);
-
-      Alert.alert('Error Al Ingresar', error as string, [{text: 'OK'}]);
+      Alert.alert(
+        'Error Desconocido',
+        (error as string) ?? 'No se pudo ingresar, inténtalo más tarde',
+        [{text: 'Ok'}],
+      );
+      return;
     } finally {
       setIsPosting(false);
     }

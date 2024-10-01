@@ -1,4 +1,4 @@
-import {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {ActivityIndicator, FlatList, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import tw from 'twrnc';
@@ -50,7 +50,13 @@ export const HomeScreen = () => {
           favoritesResponse?.some(fav => fav.recipeId === recipe.id) ?? true,
       }));
 
-      setData(prevData => [...prevData, ...formatRecipe]);
+      setData(prevData => {
+        const uniqueData = formatRecipe.filter(
+          item => !prevData.some(existingItem => existingItem.id === item.id),
+        );
+        return [...prevData, ...uniqueData];
+      });
+
       const currentPage = Math.floor(offset / limit) + 1;
       if (currentPage === newRecipes.totalPages) {
         setHasMore(false);

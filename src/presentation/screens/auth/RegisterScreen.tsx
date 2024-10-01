@@ -15,6 +15,7 @@ import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import tw from 'twrnc';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {StackScreenProps} from '@react-navigation/stack';
+import {AxiosError} from 'axios';
 
 import {AuthStackParams} from '../../navigator/AuthNavigator';
 import {useThemeStore} from '../../store/theme/ThemeStore';
@@ -80,8 +81,17 @@ export const RegisterScreen = ({navigation}: Props) => {
 
       return;
     } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error.response);
+        Alert.alert('Error', error?.response?.data.message, [{text: 'Ok'}]);
+        return;
+      }
       console.log(error);
-      Alert.alert('Error Al Ingresar', error as string, [{text: 'OK'}]);
+      Alert.alert(
+        'Error Desconocido',
+        (error as string) ?? 'No pudo registrar tu cuenta, inténtalo más tarde',
+        [{text: 'Ok'}],
+      );
     } finally {
       setIsPosting(false);
     }

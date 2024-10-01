@@ -93,12 +93,13 @@ export const EditRecipeScreen = () => {
 
         const backendUrl = API_URL.replace('/api', '');
 
+        let imageUrl = '';
         if (recipe.image?.startsWith('http')) {
-          setRecipeImage(recipe.image);
+          imageUrl = recipe.image;
         } else {
-          console.log(`${backendUrl}/${recipe.image}`);
-          setRecipeImage(`${backendUrl}/${recipe.image}`);
+          imageUrl = `${backendUrl}/${recipe.image}`;
         }
+        setRecipeImage(`${imageUrl}?${new Date().getTime()}`);
 
         reset({
           title: recipe?.title ?? 'No title',
@@ -206,7 +207,7 @@ export const EditRecipeScreen = () => {
                     {recipeImage ? (
                       <Image
                         alt={`${user?.firstName} ${user?.lastName}`}
-                        src={recipeImage}
+                        source={{uri: recipeImage}}
                         style={tw`w-full rounded-full h-36 w-36 border border-sky-500`}
                       />
                     ) : (

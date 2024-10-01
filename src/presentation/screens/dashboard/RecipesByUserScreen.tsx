@@ -28,6 +28,7 @@ export const RecipesByUserScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
+      setData([]);
       fetchRecipeByUser(id, limit, offset);
     }, [id, offset]),
   );
@@ -57,7 +58,14 @@ export const RecipesByUserScreen = () => {
           resp.recipes.at(0)?.User.lastName
         }`,
       );
-      setData(prevData => [...prevData, ...formatRecipe]);
+
+      setData(prevData => {
+        const uniqueData = formatRecipe.filter(
+          item => !prevData.some(existingItem => existingItem.id === item.id),
+        );
+        return [...prevData, ...uniqueData];
+      });
+
       const currentPage = Math.floor(offset / limit) + 1;
       if (currentPage === resp.totalPages) {
         setHasMore(false);
@@ -101,29 +109,31 @@ export const RecipesByUserScreen = () => {
         <View style={tw`flex-1 justify-center`}>
           <ActivityIndicator size={50} />
         </View>
-      ) : data.length === 0 ? (
-        <View style={tw`flex-1 items-center justify-center`}>
-          <Text
-            style={tw`p-2 uppercase border border-red-500 text-red-500 rounded-md`}>
-            No se encontraron recetas
-          </Text>
-        </View>
       ) : (
         <View style={tw`mt-2 flex-1 justify-between`}>
           <View>
             <Text style={tw`text-2xl ${isDark ? 'text-white' : 'text-black'}`}>
               {userName}
             </Text>
-            <FlatList
-              showsVerticalScrollIndicator={false}
-              data={data}
-              extraData={data} // Forzar el render cuando cambia `data`
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({item}) => <RecipeCard key={item.id} {...item} />}
-              onEndReached={handleLoadMoreData}
-              onEndReachedThreshold={0.5}
-              ListFooterComponent={renderFooter}
-            />
+            {data.length === 0 ? (
+              <View style={tw`mx-auto my-10`}>
+                <Text
+                  style={tw`p-2 uppercase border border-red-500 text-red-500 rounded-md`}>
+                  No se encontraron recetas
+                </Text>
+              </View>
+            ) : (
+              <FlatList
+                showsVerticalScrollIndicator={false}
+                data={data}
+                extraData={data} // Forzar el render cuando cambia `data`
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({item}) => <RecipeCard key={item.id} {...item} />}
+                onEndReached={handleLoadMoreData}
+                onEndReachedThreshold={0.5}
+                ListFooterComponent={renderFooter}
+              />
+            )}
           </View>
 
           <Footer />

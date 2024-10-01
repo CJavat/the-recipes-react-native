@@ -23,11 +23,14 @@ export const RecipeCard = (recipe: CardRecipe) => {
   useEffect(() => {
     const backendUrl = API_URL.replace('/api', '');
 
+    let imageUrl = '';
     if (recipe.image.startsWith('http')) {
-      setImageRecipe(recipe.image);
+      imageUrl = recipe.image;
     } else {
-      setImageRecipe(`${backendUrl}/${recipe.image}`);
+      imageUrl = `${backendUrl}/${recipe.image}`;
     }
+
+    setImageRecipe(`${imageUrl}?${new Date().getTime()}`);
   }, []);
 
   return (
@@ -38,7 +41,7 @@ export const RecipeCard = (recipe: CardRecipe) => {
         {imageRecipe ? (
           <Image
             style={tw`w-20 h-20 border rounded-md`}
-            src={imageRecipe}
+            source={{uri: imageRecipe}}
             alt={recipe.title}
           />
         ) : (

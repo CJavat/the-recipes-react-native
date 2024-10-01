@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, Pressable, Text, View, ActivityIndicator} from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -45,18 +45,25 @@ export const UserMenu = () => {
   const {user, logout} = useAuthStore();
   const {isDark} = useThemeStore();
 
+  const [isLoading, setIsLoading] = useState(false);
   const [isExpandedProfile, setIsExpandedProfile] = useState(false);
   const [userImageProfile, setUserImageProfile] = useState('');
 
   useEffect(() => {
+    setIsLoading(true);
     const backendUrl = API_URL.replace('/api', '');
 
+    let imageUrl = '';
     if (user?.avatar?.startsWith('http')) {
-      setUserImageProfile(user.avatar);
+      imageUrl = user.avatar;
     } else {
-      setUserImageProfile(`${backendUrl}/${user?.avatar}`);
+      imageUrl = `${backendUrl}/${user?.avatar}`;
     }
-  }, []);
+
+    setUserImageProfile(`${imageUrl}?${new Date().getTime()}`);
+
+    setIsLoading(false);
+  }, [user]);
 
   const profileMenuOptionSelected = (profile: ProfileOptions) => {
     setIsExpandedProfile(prevState => !prevState);
@@ -71,11 +78,13 @@ export const UserMenu = () => {
     <View style={tw`relative flex items-center gap-3 pr-2`}>
       <Pressable
         onPress={() => setIsExpandedProfile(prevState => !prevState)}
-        style={tw`h-10 w-10 relative flex rounded-full text-sm`}>
+        style={tw`h-10 w-10 relative flex rounded-full text-sm ${
+          isLoading ? 'border border-sky-500' : ''
+        }`}>
         {userImageProfile ? (
           <Image
             style={tw`h-10 w-10 rounded-full border border-sky-500`}
-            src={userImageProfile}
+            source={{uri: userImageProfile}}
             alt="User Image"
           />
         ) : (

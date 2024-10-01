@@ -160,7 +160,7 @@ export const CreateRecipeScreen = () => {
                 {imageSelected ? (
                   <Image
                     alt={`${user?.firstName} ${user?.lastName}`}
-                    src={imageSelected.path}
+                    source={{uri: imageSelected.path}}
                     style={tw`w-full rounded-full h-36 w-36 border border-sky-500`}
                   />
                 ) : (

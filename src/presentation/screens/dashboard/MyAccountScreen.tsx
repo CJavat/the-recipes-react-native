@@ -13,7 +13,6 @@ import tw from 'twrnc';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import {DashboardLayout} from '../../layouts/DashboardLayout';
-import {Footer} from '../../components/Footer';
 
 import {useThemeStore} from '../../store/theme/ThemeStore';
 import {useAuthStore} from '../../store/auth/AuthStore';
@@ -37,12 +36,13 @@ export const MyAccountScreen = () => {
     setIsLoading(true);
     const backendUrl = API_URL.replace('/api', '');
 
+    let imageUrl = '';
     if (user?.avatar?.startsWith('http')) {
-      setUserImageProfile(user.avatar);
+      imageUrl = user.avatar;
     } else {
-      setUserImageProfile(`${backendUrl}/${user?.avatar}`);
+      imageUrl = `${backendUrl}/${user?.avatar}`;
     }
-
+    setUserImageProfile(`${imageUrl}?${new Date().getTime()}`);
     setIsLoading(false);
   }, []);
 
@@ -84,7 +84,7 @@ export const MyAccountScreen = () => {
                   {userImageProfile ? (
                     <Image
                       style={tw`h-28 w-28 rounded-full border border-sky-500`}
-                      src={userImageProfile}
+                      source={{uri: userImageProfile}}
                       alt={`${user?.firstName} ${user?.lastName}`}
                     />
                   ) : (
