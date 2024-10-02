@@ -87,7 +87,7 @@ npm run android -- --mode="release"
 
 ## Generar APK
 
-1. Generar las llaves privadas
+1. Generar las llaves privadas y mover el **archivo** generado a `android/app`.
 
 ```
 keytool -genkeypair -v -storetype PKCS12 -keystore my-upload-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
