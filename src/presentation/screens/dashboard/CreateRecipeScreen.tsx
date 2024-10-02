@@ -81,7 +81,7 @@ export const CreateRecipeScreen = () => {
     ImagePicker.openPicker({
       width: 700,
       height: 700,
-      cropping: true, // Permite el recorte
+      cropping: true,
       mediaType: 'photo',
     })
       .then((image: ImageOrVideo) => {
@@ -268,7 +268,7 @@ export const CreateRecipeScreen = () => {
                         onBlur={onBlur}
                         onChangeText={onChange}
                         value={value}
-                        placeholder="Escribe tu apellido"
+                        placeholder="Escribe una descripción"
                       />
                     )}
                     name="description"
@@ -306,8 +306,8 @@ export const CreateRecipeScreen = () => {
                         placeholder="Ingrese un ingrediente"
                       />
                     )}
-                    name={`ingredients.${index}`} // Nombre del campo
-                    rules={{required: true}} // Validación
+                    name={`ingredients.${index}`}
+                    rules={{required: true}}
                   />
                 ))}
                 {errors.ingredients && (
@@ -334,8 +334,7 @@ export const CreateRecipeScreen = () => {
                       addIngredientButton: false,
                     }))
                   }
-                  onPress={() => ingredientAppend('')} // Agregar un nuevo campo
-                >
+                  onPress={() => ingredientAppend('')}>
                   <Icon
                     name="add-outline"
                     size={20}
@@ -380,8 +379,8 @@ export const CreateRecipeScreen = () => {
                         placeholder="Ingrese un paso"
                       />
                     )}
-                    name={`steps.${index}`} // Nombre del campo
-                    rules={{required: true}} // Validación
+                    name={`steps.${index}`}
+                    rules={{required: true}}
                   />
                 ))}
                 {errors.steps && (
@@ -408,8 +407,7 @@ export const CreateRecipeScreen = () => {
                       addStepButton: false,
                     }))
                   }
-                  onPress={() => stepAppend('')} // Agregar un nuevo campo
-                >
+                  onPress={() => stepAppend('')}>
                   <Icon
                     name="add-outline"
                     size={20}
