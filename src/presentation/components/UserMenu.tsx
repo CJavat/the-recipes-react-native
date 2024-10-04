@@ -60,7 +60,7 @@ export const UserMenu = () => {
       imageUrl = `${backendUrl}/${user?.avatar}`;
     }
 
-    setUserImageProfile(`${imageUrl}?${new Date().getTime()}`);
+    setUserImageProfile(`${imageUrl}?t=${new Date().getTime()}`);
 
     setIsLoading(false);
   }, [user]);
@@ -83,6 +83,7 @@ export const UserMenu = () => {
         }`}>
         {!isLoading && userImageProfile ? (
           <Image
+            key={userImageProfile}
             style={tw`h-10 w-10 rounded-full border border-sky-500`}
             source={{uri: userImageProfile}}
             alt="User Image"
